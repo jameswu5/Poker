@@ -21,4 +21,12 @@ public static class Test
         }
         Console.WriteLine("All tests passed.");
     }
+
+    public static void TestStandardDeck()
+    {
+        CardCollection deck = new();
+        deck.CreateStandardDeck();
+        deck.Shuffle();
+        deck.Display();
+    }
 }

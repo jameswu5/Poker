@@ -7,6 +7,6 @@ public class Program
 {
     public static void Main()
     {
-        Test.TestCreateCard();
+        Test.TestStandardDeck();
     }
 }

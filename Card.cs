@@ -96,6 +96,6 @@ public static class Card
         char rank = RankMapReverse[(card >> 8) & 0xF];
         char suit = SuitMapReverse[(card >> 12) & 0xF];
 
-        Console.WriteLine($"{rank}{SuitDisplayMap[suit]}");
+        Console.Write($"{rank}{SuitDisplayMap[suit]}  ");
     }
 }

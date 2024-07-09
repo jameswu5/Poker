@@ -32,22 +32,55 @@ public static class Card
         {'A', 12}
     };
 
-    private static readonly Dictionary<char, int> SuitMap = new()
+    private static readonly Dictionary<char, ulong> SuitMap = new()
     {
-        {'S', 0},
-        {'H', 1},
-        {'D', 2},
-        {'C', 3}
+        {'S', 0b0001},
+        {'H', 0b0010},
+        {'D', 0b0100},
+        {'C', 0b1000}
     };
 
-    public static ulong CreateCard(char suit, char rank)
+    private static readonly Dictionary<ulong, char> RankMapReverse = new()
+    {
+        {0, '2'},
+        {1, '3'},
+        {2, '4'},
+        {3, '5'},
+        {4, '6'},
+        {5, '7'},
+        {6, '8'},
+        {7, '9'},
+        {8, 'T'},
+        {9, 'J'},
+        {10, 'Q'},
+        {11, 'K'},
+        {12, 'A'}
+    };
+
+    private static readonly Dictionary<ulong, char> SuitMapReverse = new()
+    {
+        {0b0001, 'S'},
+        {0b0010, 'H'},
+        {0b0100, 'D'},
+        {0b1000, 'C'}
+    };
+
+    private static readonly Dictionary<char, char> SuitDisplayMap = new()
+    {
+        {'S', '♠'},
+        {'H', '♥'},
+        {'D', '♦'},
+        {'C', '♣'}
+    };
+
+    public static ulong CreateCard(char rank, char suit)
     {
         ulong card = 0;
 
         card |= (ulong)1 << (int)RankMap[rank];
         card <<= 4;
 
-        card |= (ulong)1 << (SuitMap[suit]);
+        card |= SuitMap[suit];
         card <<= 4;
 
         card |= RankMap[rank];
@@ -58,8 +91,11 @@ public static class Card
         return card;
     }
 
-    public static string Display(ulong card)
+    public static void Display(ulong card)
     {
-        throw new NotImplementedException();
+        char rank = RankMapReverse[(card >> 8) & 0xF];
+        char suit = SuitMapReverse[(card >> 12) & 0xF];
+
+        Console.WriteLine($"{rank}{SuitDisplayMap[suit]}");
     }
 }

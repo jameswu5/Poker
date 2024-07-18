@@ -5,8 +5,15 @@ namespace Poker.Evaluate;
 
 public static class Lookup
 {
-    private const int StraightFlushes = 10;
-    private const int Flushes = 1277;
+    private const int MaxStraightFlushes = 10;
+    private const int MaxFourOfAKind = 156 + MaxStraightFlushes;
+    private const int MaxFullHouse = 156 + MaxFourOfAKind;
+    private const int MaxFlush = 1277 + MaxFullHouse;
+    private const int MaxStraight = 10 + MaxFlush;
+    private const int MaxThreeOfAKind = 858 + MaxStraight;
+    private const int MaxTwoPair = 858 + MaxThreeOfAKind;
+    private const int MaxOnePair = 2860 + MaxTwoPair;
+    private const int MaxHighCard = 1277 + MaxOnePair;
 
     public static int[] FlushLookup;
 
@@ -42,7 +49,7 @@ public static class Lookup
         }
 
         int current = 0b11111;
-        int score = StraightFlushes + Flushes; // This is the score of the lowest flush (23457)
+        int score = MaxFlush; // This is the score of the lowest flush (23457)
 
         while (current != 0b1111100000000)
         {

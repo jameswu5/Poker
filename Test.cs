@@ -43,4 +43,14 @@ public static class Test
         Console.WriteLine(Evaluate.Evaluate.IsFlush(cards));
     }
 
+    public static void CheckNextBitSequence()
+    {
+        uint cur = 0b11111;
+        for (int i = 0; i < 50; i++)
+        {
+            cur = Evaluate.Lookup.GetNextBitPermutation(cur);
+            Console.WriteLine(Convert.ToString(cur, 2).PadLeft(32, '0'));
+        }
+    }
+
 }

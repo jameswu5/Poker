@@ -8,6 +8,7 @@ public class Program
     public static void Main()
     {
         // Test.TestStandardDeck();
-        Test.CheckFlush();
+        // Test.CheckFlush();
+        Test.CheckNextBitSequence();
     }
 }

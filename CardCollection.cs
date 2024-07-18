@@ -8,26 +8,26 @@ public class CardCollection
     private static readonly char[] Ranks = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
     private static readonly char[] Suits = {'S', 'H', 'D', 'C'};
 
-    public List<ulong> cards;
+    public List<uint> cards;
 
     public CardCollection()
     {
-        cards = new List<ulong>();
+        cards = new List<uint>();
     }
 
-    public void Add(ulong card)
+    public void Add(uint card)
     {
         cards.Add(card);
     }
 
-    public ulong Peek()
+    public uint Peek()
     {
         return cards[^1];
     }
 
-    public ulong Pop()
+    public uint Pop()
     {
-        ulong card = Peek();
+        uint card = Peek();
         cards.RemoveAt(cards.Count - 1);
         return card;
     }
@@ -62,7 +62,7 @@ public class CardCollection
 
     public void Display()
     {
-        foreach (ulong card in cards)
+        foreach (uint card in cards)
         {
             Card.Display(card);
         }

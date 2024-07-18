@@ -5,7 +5,7 @@ namespace Poker;
 
 public static class Card
 {
-    // These are stored as 64-bit unsigned integers
+    // These are stored as 32-bit unsigned integers
     // +--------+--------+--------+--------+
     // |xxxbbbbb|bbbbbbbb|cdhsrrrr|xxpppppp|
     // +--------+--------+--------+--------+
@@ -14,8 +14,8 @@ public static class Card
     // cdhs = suit of card (bit turned on based on suit of card)
     // b = bit turned on depending on rank of card
 
-    private static readonly ulong[] Primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
-    private static readonly Dictionary<char, ulong> RankMap = new()
+    private static readonly uint[] Primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+    private static readonly Dictionary<char, uint> RankMap = new()
     {
         {'2', 0},
         {'3', 1},
@@ -32,7 +32,7 @@ public static class Card
         {'A', 12}
     };
 
-    private static readonly Dictionary<char, ulong> SuitMap = new()
+    private static readonly Dictionary<char, uint> SuitMap = new()
     {
         {'S', 0b0001},
         {'H', 0b0010},
@@ -40,7 +40,7 @@ public static class Card
         {'C', 0b1000}
     };
 
-    private static readonly Dictionary<ulong, char> RankMapReverse = new()
+    private static readonly Dictionary<uint, char> RankMapReverse = new()
     {
         {0, '2'},
         {1, '3'},
@@ -57,7 +57,7 @@ public static class Card
         {12, 'A'}
     };
 
-    private static readonly Dictionary<ulong, char> SuitMapReverse = new()
+    private static readonly Dictionary<uint, char> SuitMapReverse = new()
     {
         {0b0001, 'S'},
         {0b0010, 'H'},
@@ -73,11 +73,11 @@ public static class Card
         {'C', '♣'}
     };
 
-    public static ulong CreateCard(char rank, char suit)
+    public static uint CreateCard(char rank, char suit)
     {
-        ulong card = 0;
+        uint card = 0;
 
-        card |= (ulong)1 << (int)RankMap[rank];
+        card |= (uint)1 << (int)RankMap[rank];
         card <<= 4;
 
         card |= SuitMap[suit];
@@ -91,7 +91,7 @@ public static class Card
         return card;
     }
 
-    public static void Display(ulong card)
+    public static void Display(uint card)
     {
         char rank = RankMapReverse[(card >> 8) & 0xF];
         char suit = SuitMapReverse[(card >> 12) & 0xF];

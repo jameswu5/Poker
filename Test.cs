@@ -32,25 +32,21 @@ public static class Test
 
     public static void CheckFlush()
     {
-        ulong c1 = Card.CreateCard('2', 'S');
-        ulong c2 = Card.CreateCard('3', 'S');
-        ulong c3 = Card.CreateCard('4', 'S');
-        ulong c4 = Card.CreateCard('5', 'S');
-        ulong c5 = Card.CreateCard('6', 'S');
-        ulong c6 = Card.CreateCard('7', 'S');
-        ulong c7 = Card.CreateCard('8', 'H');
-        ulong[] cards = {c1, c2, c3, c4, c5, c6};
-        Console.WriteLine(Evaluate.Evaluate.IsFlush(cards));
+        uint c1 = Card.CreateCard('2', 'S');
+        uint c2 = Card.CreateCard('3', 'S');
+        uint c3 = Card.CreateCard('4', 'S');
+        uint c4 = Card.CreateCard('5', 'S');
+        uint c5 = Card.CreateCard('6', 'S');
+        uint c6 = Card.CreateCard('7', 'S');
+        uint c7 = Card.CreateCard('8', 'S');
+        uint c8 = Card.CreateCard('9', 'S');
+        uint c9 = Card.CreateCard('T', 'S');
+        uint c10 = Card.CreateCard('J', 'S');
+        uint c11 = Card.CreateCard('Q', 'S');
+        uint c12 = Card.CreateCard('K', 'S');
+        uint c13 = Card.CreateCard('A', 'S');
+        uint[] cards = {c9, c10, c11, c12, c13};
+        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(cards));
+        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new uint[] {c1, c2, c3, c7, c13}));
     }
-
-    public static void CheckNextBitSequence()
-    {
-        uint cur = 0b11111;
-        for (int i = 0; i < 50; i++)
-        {
-            cur = Evaluate.Lookup.GetNextBitPermutation(cur);
-            Console.WriteLine(Convert.ToString(cur, 2).PadLeft(32, '0'));
-        }
-    }
-
 }

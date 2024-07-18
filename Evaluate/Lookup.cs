@@ -11,25 +11,59 @@ public static class Lookup
     // Initialise Lookup tables
     static Lookup()
     {
-
+        FlushLookup = GetFlushLookup();
     }
 
+    public static void Init() {}
 
     private static int[] GetFlushLookup()
     {
         int[] flushes = new int[7937];
+
+        int[] straightFlushes = new int[]
+        {
+            0b1111100000000, // royal flush
+            0b0111110000000,
+            0b0011111000000,
+            0b0001111100000,
+            0b0000111110000,
+            0b0000011111000,
+            0b0000001111100,
+            0b0000000111110,
+            0b0000000011111,
+            0b1000000001111, // 5 high straight flush
+        };
+
+        for (int i = 0; i < 10; i++)
+        {
+            flushes[straightFlushes[i]] = i + 1;
+        }
+
+        int current = 0b11111;
+        int score = 11;
+
+        while (current != 0b1111100000000)
+        {
+            current = GetNextBitPermutation(current);
+            if (flushes[current] == 0)
+            {
+                flushes[current] = score;
+                score++;
+            }
+        }
+
         return flushes;
     }
 
     // Bit hack from http://www-graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation
-    public static uint GetNextBitPermutation(uint v)
+    public static int GetNextBitPermutation(int v)
     {
-        uint t = v | (v - 1);
-        return (t + 1) | (((~t & (uint)-(int)~t) - 1) >> (BitScanForward(v) + 1));
+        int t = v | (v - 1);
+        return (t + 1) | (((~t & -~t) - 1) >> (BitScanForward(v) + 1));
     }
 
     // Code taken from my chess project
-    private static int BitScanForward(uint data)
+    private static int BitScanForward(int data)
     {
         // There is no bit that is equal to 1
         if (data == 0) return -1;

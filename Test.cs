@@ -29,4 +29,18 @@ public static class Test
         deck.Shuffle();
         deck.Display();
     }
+
+    public static void CheckFlush()
+    {
+        ulong c1 = Card.CreateCard('2', 'S');
+        ulong c2 = Card.CreateCard('3', 'S');
+        ulong c3 = Card.CreateCard('4', 'S');
+        ulong c4 = Card.CreateCard('5', 'S');
+        ulong c5 = Card.CreateCard('6', 'S');
+        ulong c6 = Card.CreateCard('7', 'S');
+        ulong c7 = Card.CreateCard('8', 'H');
+        ulong[] cards = {c1, c2, c3, c4, c5, c6};
+        Console.WriteLine(Evaluate.Evaluate.IsFlush(cards));
+    }
+
 }

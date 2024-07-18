@@ -7,6 +7,7 @@ public class Program
 {
     public static void Main()
     {
-        Test.TestStandardDeck();
+        // Test.TestStandardDeck();
+        Test.CheckFlush();
     }
 }

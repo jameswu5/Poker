@@ -45,8 +45,6 @@ public static class Test
         uint c11 = Card.CreateCard('Q', 'S');
         uint c12 = Card.CreateCard('K', 'S');
         uint c13 = Card.CreateCard('A', 'S');
-        uint[] cards = {c9, c10, c11, c12, c13};
-        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(cards));
-        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new uint[] {c1, c2, c3, c7, c13}));
+        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new uint[] {c8, c12, c13, c10, c11}));
     }
 }

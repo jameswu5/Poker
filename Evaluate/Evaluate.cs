@@ -5,7 +5,7 @@ namespace Poker.Evaluate;
 
 public static class Evaluate
 {
-    public static bool IsFlush(int[] cards)
+    private static bool IsFlush(int[] cards)
     {
         // Checks if all the cards have the same suit
         int key = 0xF000;
@@ -16,32 +16,74 @@ public static class Evaluate
         return key > 0;
     }
 
-    public static int GetFlushValue(int[] cards)
+    private static bool IsDistinct(int[] cards)
     {
-        if (cards.Length != 5)
+        int seen = 0;
+        foreach (int card in cards)
         {
-            throw new ArgumentException("There must be 5 cards");
+            int rank = card & 0xFF00;
+            if ((seen & rank) > 0) return false;
+            seen |= rank;
         }
+        return true;
+    }
 
+    public static int GetPrimeKeyFromRanks(int[] rankIndices)
+    {
+        int key = 1;
+        for (int i = 0; i < rankIndices.Length; i++)
+        {
+            key *= Card.Primes[rankIndices[i]];
+        }
+        return key;
+    }
+
+    private static int GetLookupKeyFromCards(int[] cards)
+    {
         int key = 0;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < cards.Length; i++)
         {
             key |= cards[i];
         }
 
         key >>= 16;
 
-        return Lookup.FlushLookup[key];
+        return key;
     }
 
-    public static int GetPrimeKey(int[] rankIndices)
+    private static int GetPrimeKeyFromCards(int[] cards)
     {
         int key = 1;
-        for (int i = 0; i < rankIndices.Length; i++)
+        for (int i = 0; i < cards.Length; i++)
         {
-            key *= (int) Card.Primes[rankIndices[i]];
+            key *= cards[i] & 0xFF;
         }
         return key;
+    }
+
+    public static int GetHandValue(int[] cards)
+    {
+        if (cards.Length != 5)
+        {
+            throw new ArgumentException("There must be 5 cards");
+        }
+
+        // Check if there is a flush
+        if (IsFlush(cards))
+        {
+            int key = GetLookupKeyFromCards(cards);
+            return Lookup.FlushLookup[key];
+        }
+
+        // Check if cards are distinct
+        if (IsDistinct(cards))
+        {
+            int key = GetLookupKeyFromCards(cards);
+            return Lookup.UniqueLookup[key];
+        }
+
+        int primeKey = GetPrimeKeyFromCards(cards);
+        return Lookup.RepeatedLookup[primeKey];
     }
 }

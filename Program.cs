@@ -10,6 +10,7 @@ public class Program
         // Test.TestStandardDeck();
         // Test.CheckFlush();
         // Test.CheckDistinctPairs();
-        Evaluate.Lookup.Init();
+        // Evaluate.Lookup.Init();
+        Test.CheckHandEvaluation();
     }
 }

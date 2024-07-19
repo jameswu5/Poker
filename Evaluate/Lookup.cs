@@ -141,7 +141,7 @@ public static class Lookup
         {
             int quad = DistinctPairs[i][0];
             int kicker = DistinctPairs[i][1];
-            int key = Evaluate.GetPrimeKey(new int[] {quad, quad, quad, quad, kicker});
+            int key = Evaluate.GetPrimeKeyFromRanks(new int[] {quad, quad, quad, quad, kicker});
 
             repeated[key] = score;
             score--;
@@ -153,7 +153,7 @@ public static class Lookup
         {
             int trip = DistinctPairs[i][0];
             int pair = DistinctPairs[i][1];
-            int key = Evaluate.GetPrimeKey(new int[] {trip, trip, trip, pair, pair});
+            int key = Evaluate.GetPrimeKeyFromRanks(new int[] {trip, trip, trip, pair, pair});
 
             repeated[key] = score;
             score--;
@@ -169,7 +169,7 @@ public static class Lookup
                 for (int kicker2 = kicker1 - 1; kicker2 >= 0; kicker2--)
                 {
                     if (trip == kicker1 || trip == kicker2) continue;
-                    int key = Evaluate.GetPrimeKey(new int[] {trip, trip, trip, kicker1, kicker2});
+                    int key = Evaluate.GetPrimeKeyFromRanks(new int[] {trip, trip, trip, kicker1, kicker2});
                     repeated[key] = score;
                     score++;
                 }
@@ -186,7 +186,7 @@ public static class Lookup
                 {
                     if (kicker == pair1 || kicker == pair2) continue;
 
-                    int key = Evaluate.GetPrimeKey(new int[] {pair1, pair1, pair2, pair2, kicker});
+                    int key = Evaluate.GetPrimeKeyFromRanks(new int[] {pair1, pair1, pair2, pair2, kicker});
                     repeated[key] = score;
                     score++;
                 }
@@ -205,7 +205,7 @@ public static class Lookup
                     {
                         if (kicker1 == pair || kicker2 == pair || kicker3 == pair) continue;
 
-                        int key = Evaluate.GetPrimeKey(new int[] {pair, pair, kicker1, kicker2, kicker3});
+                        int key = Evaluate.GetPrimeKeyFromRanks(new int[] {pair, pair, kicker1, kicker2, kicker3});
                         repeated[key] = score;
                         score++;
                     }

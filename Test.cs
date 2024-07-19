@@ -45,7 +45,6 @@ public static class Test
         int cq = Card.CreateCard('Q', 'S');
         int ck = Card.CreateCard('K', 'S');
         int ca = Card.CreateCard('A', 'S');
-        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new int[] {c9, cj, cq, ck, ca})); // should be 323
     }
 
     public static void CheckUnique()
@@ -60,5 +59,21 @@ public static class Test
         {
             Console.WriteLine($"{Evaluate.Lookup.DistinctPairs[i][0]} {Evaluate.Lookup.DistinctPairs[i][1]}");
         }
+    }
+
+    public static void CheckHandEvaluation()
+    {
+        // Generate random hand
+        CardCollection deck = new();
+        deck.CreateStandardDeck();
+        deck.Shuffle();
+        int[] hand = new int[5] {deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop()};
+
+        foreach (int card in hand)
+        {
+            Card.Display(card);
+        }
+        Console.WriteLine(Evaluate.Evaluate.GetHandValue(hand));
+
     }
 }

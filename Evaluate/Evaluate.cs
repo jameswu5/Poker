@@ -5,6 +5,8 @@ namespace Poker.Evaluate;
 
 public static class Evaluate
 {
+    public enum HandStrength { HighCard, OnePair, TwoPair, ThreeOfAKind, Straight, Flush, FullHouse, FourOfAKind, StraightFlush }
+
     private static bool IsFlush(int[] cards)
     {
         // Checks if all the cards have the same suit
@@ -16,12 +18,12 @@ public static class Evaluate
         return key > 0;
     }
 
-    private static bool IsDistinct(int[] cards)
+    public static bool IsDistinct(int[] cards)
     {
         int seen = 0;
         foreach (int card in cards)
         {
-            int rank = card & 0xFF00;
+            int rank = (card >> 16) & 0xFFFF;
             if ((seen & rank) > 0) return false;
             seen |= rank;
         }
@@ -85,5 +87,18 @@ public static class Evaluate
 
         int primeKey = GetPrimeKeyFromCards(cards);
         return Lookup.RepeatedLookup[primeKey];
+    }
+
+    public static HandStrength ClassifyHand(int handValue)
+    {
+        if (handValue <= Lookup.MaxStraightFlush) { return HandStrength.StraightFlush; }
+        if (handValue <= Lookup.MaxFourOfAKind) { return HandStrength.FourOfAKind; }
+        if (handValue <= Lookup.MaxFullHouse) { return HandStrength.FullHouse; }
+        if (handValue <= Lookup.MaxFlush) { return HandStrength.Flush; }
+        if (handValue <= Lookup.MaxStraight) { return HandStrength.Straight; }
+        if (handValue <= Lookup.MaxThreeOfAKind) { return HandStrength.ThreeOfAKind; }
+        if (handValue <= Lookup.MaxTwoPair) { return HandStrength.TwoPair; }
+        if (handValue <= Lookup.MaxOnePair) { return HandStrength.OnePair; }
+        return HandStrength.HighCard;
     }
 }

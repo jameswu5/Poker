@@ -5,15 +5,15 @@ namespace Poker.Evaluate;
 
 public static class Lookup
 {
-    private const int MaxStraightFlush = 10;
-    private const int MaxFourOfAKind = 156 + MaxStraightFlush;
-    private const int MaxFullHouse = 156 + MaxFourOfAKind;
-    private const int MaxFlush = 1277 + MaxFullHouse;
-    private const int MaxStraight = 10 + MaxFlush;
-    private const int MaxThreeOfAKind = 858 + MaxStraight;
-    private const int MaxTwoPair = 858 + MaxThreeOfAKind;
-    private const int MaxOnePair = 2860 + MaxTwoPair;
-    private const int MaxHighCard = 1277 + MaxOnePair;
+    public const int MaxStraightFlush = 10;
+    public const int MaxFourOfAKind = 156 + MaxStraightFlush;
+    public const int MaxFullHouse = 156 + MaxFourOfAKind;
+    public const int MaxFlush = 1277 + MaxFullHouse;
+    public const int MaxStraight = 10 + MaxFlush;
+    public const int MaxThreeOfAKind = 858 + MaxStraight;
+    public const int MaxTwoPair = 858 + MaxThreeOfAKind;
+    public const int MaxOnePair = 2860 + MaxTwoPair;
+    public const int MaxHighCard = 1277 + MaxOnePair;
 
     public static readonly int[][] DistinctPairs;
 

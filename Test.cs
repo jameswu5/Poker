@@ -73,7 +73,8 @@ public static class Test
         {
             Card.Display(card);
         }
-        Console.WriteLine(Evaluate.Evaluate.GetHandValue(hand));
-
+        int handValue = Evaluate.Evaluate.GetHandValue(hand);
+        Console.WriteLine();
+        Console.WriteLine($"{handValue} - {Evaluate.Evaluate.ClassifyHand(handValue)}");
     }
 }

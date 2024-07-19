@@ -5,7 +5,7 @@ namespace Poker;
 
 public static class Card
 {
-    // These are stored as 32-bit unsigned integers
+    // These are stored as 32-bit integers
     // +--------+--------+--------+--------+
     // |xxxbbbbb|bbbbbbbb|cdhsrrrr|xxpppppp|
     // +--------+--------+--------+--------+

@@ -14,8 +14,8 @@ public static class Card
     // cdhs = suit of card (bit turned on based on suit of card)
     // b = bit turned on depending on rank of card
 
-    public static readonly uint[] Primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
-    public static readonly Dictionary<char, uint> RankMap = new()
+    public static readonly int[] Primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+    public static readonly Dictionary<char, int> RankMap = new()
     {
         {'2', 0},
         {'3', 1},
@@ -32,7 +32,7 @@ public static class Card
         {'A', 12}
     };
 
-    public static readonly Dictionary<char, uint> SuitMap = new()
+    public static readonly Dictionary<char, int> SuitMap = new()
     {
         {'S', 0b0001},
         {'H', 0b0010},
@@ -40,7 +40,7 @@ public static class Card
         {'C', 0b1000}
     };
 
-    public static readonly Dictionary<uint, char> RankMapReverse = new()
+    public static readonly Dictionary<int, char> RankMapReverse = new()
     {
         {0, '2'},
         {1, '3'},
@@ -57,7 +57,7 @@ public static class Card
         {12, 'A'}
     };
 
-    public static readonly Dictionary<uint, char> SuitMapReverse = new()
+    public static readonly Dictionary<int, char> SuitMapReverse = new()
     {
         {0b0001, 'S'},
         {0b0010, 'H'},
@@ -73,11 +73,11 @@ public static class Card
         {'C', '♣'}
     };
 
-    public static uint CreateCard(char rank, char suit)
+    public static int CreateCard(char rank, char suit)
     {
-        uint card = 0;
+        int card = 0;
 
-        card |= (uint)1 << (int)RankMap[rank];
+        card |= (int)1 << (int)RankMap[rank];
         card <<= 4;
 
         card |= SuitMap[suit];
@@ -91,7 +91,7 @@ public static class Card
         return card;
     }
 
-    public static void Display(uint card)
+    public static void Display(int card)
     {
         char rank = RankMapReverse[(card >> 8) & 0xF];
         char suit = SuitMapReverse[(card >> 12) & 0xF];

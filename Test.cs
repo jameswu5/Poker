@@ -32,20 +32,20 @@ public static class Test
 
     public static void CheckFlush()
     {
-        uint c2 = Card.CreateCard('2', 'S');
-        uint c3 = Card.CreateCard('3', 'S');
-        uint c4 = Card.CreateCard('4', 'S');
-        uint c5 = Card.CreateCard('5', 'S');
-        uint c6 = Card.CreateCard('6', 'S');
-        uint c7 = Card.CreateCard('7', 'S');
-        uint c8 = Card.CreateCard('8', 'S');
-        uint c9 = Card.CreateCard('9', 'S');
-        uint ct = Card.CreateCard('T', 'S');
-        uint cj = Card.CreateCard('J', 'S');
-        uint cq = Card.CreateCard('Q', 'S');
-        uint ck = Card.CreateCard('K', 'S');
-        uint ca = Card.CreateCard('A', 'S');
-        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new uint[] {c9, cj, cq, ck, ca})); // should be 323
+        int c2 = Card.CreateCard('2', 'S');
+        int c3 = Card.CreateCard('3', 'S');
+        int c4 = Card.CreateCard('4', 'S');
+        int c5 = Card.CreateCard('5', 'S');
+        int c6 = Card.CreateCard('6', 'S');
+        int c7 = Card.CreateCard('7', 'S');
+        int c8 = Card.CreateCard('8', 'S');
+        int c9 = Card.CreateCard('9', 'S');
+        int ct = Card.CreateCard('T', 'S');
+        int cj = Card.CreateCard('J', 'S');
+        int cq = Card.CreateCard('Q', 'S');
+        int ck = Card.CreateCard('K', 'S');
+        int ca = Card.CreateCard('A', 'S');
+        Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new int[] {c9, cj, cq, ck, ca})); // should be 323
     }
 
     public static void CheckUnique()

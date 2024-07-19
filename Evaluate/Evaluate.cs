@@ -5,10 +5,10 @@ namespace Poker.Evaluate;
 
 public static class Evaluate
 {
-    public static bool IsFlush(uint[] cards)
+    public static bool IsFlush(int[] cards)
     {
         // Checks if all the cards have the same suit
-        ulong key = 0xF000;
+        int key = 0xF000;
         for (int i = 0; i < cards.Length; i++)
         {
             key &= cards[i] & 0xF000;
@@ -16,14 +16,14 @@ public static class Evaluate
         return key > 0;
     }
 
-    public static int GetFlushValue(uint[] cards)
+    public static int GetFlushValue(int[] cards)
     {
         if (cards.Length != 5)
         {
             throw new ArgumentException("There must be 5 cards");
         }
 
-        uint key = 0;
+        int key = 0;
 
         for (int i = 0; i < 5; i++)
         {

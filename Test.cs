@@ -67,14 +67,39 @@ public static class Test
         CardCollection deck = new();
         deck.CreateStandardDeck();
         deck.Shuffle();
-        int[] hand = new int[5] {deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop()};
+        int[] hand = new int[] {deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop()};
 
         foreach (int card in hand)
         {
             Card.Display(card);
         }
-        int handValue = Evaluate.Evaluate.GetHandValue(hand);
+        int handValue = Evaluate.Evaluate.EvaluateHand(hand);
         Console.WriteLine();
         Console.WriteLine($"{handValue} - {Evaluate.Evaluate.ClassifyHand(handValue)}");
+    }
+
+    public static void CheckCombinations()
+    {
+        CardCollection deck = new();
+        deck.CreateStandardDeck();
+        deck.Shuffle();
+        int[] hand = new int[] {deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop(), deck.Pop()};
+
+        foreach (int card in hand)
+        {
+            Card.Display(card);
+        }
+        Console.WriteLine("\n\n");
+
+        List<int[]> result = Evaluate.Evaluate.GetCombinations(hand, 5);
+        foreach (int[] cards in result)
+        {
+            foreach (int card in cards)
+            {
+                Card.Display(card);
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine(result.Count);
     }
 }

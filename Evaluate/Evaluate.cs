@@ -64,7 +64,30 @@ public static class Evaluate
         return key;
     }
 
-    public static int GetHandValue(int[] cards)
+    public static List<int[]> GetCombinations(int[] cards, int n)
+    {
+        List<int[]> result = new List<int[]>();
+        GenerateCombinations(cards, n, 0, new List<int>(), result);
+        return result;
+    }
+
+    private static void GenerateCombinations(int[] cards, int n, int startIndex, List<int> cur, List<int[]> result)
+    {
+        if (cur.Count == n)
+        {
+            result.Add(cur.ToArray());
+            return;
+        }
+
+        for (int i = startIndex; i < cards.Length; i++)
+        {
+            cur.Add(cards[i]);
+            GenerateCombinations(cards, n, i + 1, cur, result);
+            cur.RemoveAt(cur.Count - 1);
+        }
+    }
+
+    private static int GetHandValue(int[] cards)
     {
         if (cards.Length != 5)
         {
@@ -89,6 +112,31 @@ public static class Evaluate
         return Lookup.RepeatedLookup[primeKey];
     }
 
+    public static int EvaluateHand(int[] cards)
+    {
+        if (cards.Length < 5)
+        {
+            throw new ArgumentException("There must be at least 5 cards");
+        }
+
+        List<int[]> hands = GetCombinations(cards, 5);
+        int bestHandValue = 10000;
+        // int[] bestHand = new int[5];
+
+        foreach (int[] hand in hands)
+        {
+            int handValue = GetHandValue(hand);
+            if (handValue < bestHandValue)
+            {
+                bestHandValue = handValue;
+                // bestHand = hand;
+            }
+        }
+
+        return bestHandValue;
+    }
+
+
     public static HandStrength ClassifyHand(int handValue)
     {
         if (handValue <= Lookup.MaxStraightFlush) { return HandStrength.StraightFlush; }
@@ -101,4 +149,5 @@ public static class Evaluate
         if (handValue <= Lookup.MaxOnePair) { return HandStrength.OnePair; }
         return HandStrength.HighCard;
     }
+
 }

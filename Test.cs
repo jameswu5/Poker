@@ -53,4 +53,12 @@ public static class Test
         Console.WriteLine(Evaluate.Lookup.UniqueLookup[3968]); // should be 1601
         Console.WriteLine(Evaluate.Lookup.UniqueLookup[47]); // should be 7462
     }
+
+    public static void CheckDistinctPairs()
+    {
+        for (int i = 0; i < 13*12; i++)
+        {
+            Console.WriteLine($"{Evaluate.Lookup.DistinctPairs[i][0]} {Evaluate.Lookup.DistinctPairs[i][1]}");
+        }
+    }
 }

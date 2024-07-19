@@ -15,17 +15,43 @@ public static class Lookup
     private const int MaxOnePair = 2860 + MaxTwoPair;
     private const int MaxHighCard = 1277 + MaxOnePair;
 
+    public static readonly int[][] DistinctPairs;
+
+    // Key: OR of the ranks of the cards
     public static readonly int[] FlushLookup; // Stores the values of flushes
     public static readonly int[] UniqueLookup; // Stores the values of five unique cards
+
+    // Stores the values of 4 of a kind, full house, 3 of a kind, 2 pair, 1 pair
+    // Key: product of primes of ranks of the cards
+    public static readonly Dictionary<int, int> RepeatedLookup; 
 
     // Initialise Lookup tables
     static Lookup()
     {
+        DistinctPairs = GetDistinctPairs();
         FlushLookup = GetFlushLookup();
         UniqueLookup = GetUniqueLookup();
+        RepeatedLookup = GetRepeatedLookup();
     }
 
     public static void Init() {}
+
+    private static int[][] GetDistinctPairs()
+    {
+        int[][] pairs = new int[13*12][];
+        int index = 0;
+        for (int i = 0; i < 13; i++)
+        {
+            for (int j = 0; j < 13; j++)
+            {
+                if (i == j) continue;
+                pairs[index] = new int[2] {i, j};
+                index++;
+            }
+        }
+        return pairs;
+    }
+
 
     private static int[] GetFlushLookup()
     {
@@ -105,6 +131,28 @@ public static class Lookup
         return unique;
     }
 
+    private static Dictionary<int, int> GetRepeatedLookup()
+    {
+        Dictionary<int, int> repeated = new();
+        int score;
+
+        // 4 of a kind
+        score = MaxFourOfAKind;
+        for (int i = 0; i < DistinctPairs.Length; i++)
+        {
+            int quad = DistinctPairs[i][0];
+            int kicker = DistinctPairs[i][1];
+            int key = Evaluate.GetPrimeKey(new int[] {quad, quad, quad, quad, kicker});
+
+            repeated[key] = score;
+            Console.WriteLine($"{Card.RankMapReverse[(uint)quad]} {Card.RankMapReverse[(uint)kicker]} {score}");
+
+            score--;
+        }
+
+
+        return repeated;
+    }
 
     // Bit hack from http://www-graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation
     public static int GetNextBitPermutation(int v)

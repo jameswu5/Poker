@@ -34,4 +34,14 @@ public static class Evaluate
 
         return Lookup.FlushLookup[key];
     }
+
+    public static int GetPrimeKey(int[] rankIndices)
+    {
+        int key = 1;
+        for (int i = 0; i < rankIndices.Length; i++)
+        {
+            key *= (int) Card.Primes[rankIndices[i]];
+        }
+        return key;
+    }
 }

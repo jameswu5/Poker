@@ -16,8 +16,6 @@ public static class Lookup
     private const int MaxHighCard = 1277 + MaxOnePair;
 
     public static readonly int[][] DistinctPairs;
-    public static readonly int[][] DistinctTriples;
-    public static readonly int[][] DistinctQuads;
 
     // Key: OR of the ranks of the cards
     public static readonly int[] FlushLookup; // Stores the values of flushes
@@ -31,8 +29,6 @@ public static class Lookup
     static Lookup()
     {
         DistinctPairs = GetDistinctPairs();
-        DistinctTriples = GetDistinctTriples();
-        DistinctQuads = GetDistinctQuads();
         FlushLookup = GetFlushLookup();
         UniqueLookup = GetUniqueLookup();
         RepeatedLookup = GetRepeatedLookup();
@@ -54,47 +50,6 @@ public static class Lookup
             }
         }
         return pairs;
-    }
-
-    private static int[][] GetDistinctTriples()
-    {
-        int[][] triples = new int[13*12*11][];
-        int index = 0;
-        for (int i = 0; i < 13; i++)
-        {
-            for (int j = 0; j < 13; j++)
-            {
-                for (int k = 0; k < 13; k++)
-                {
-                    if (i == j || i == k || j == k) continue;
-                    triples[index] = new int[3] {i, j, k};
-                    index++;
-                }
-            }
-        }
-        return triples;
-    }
-
-    private static int[][] GetDistinctQuads()
-    {
-        int[][] quads = new int[13*12*11*10][];
-        int index = 0;
-        for (int i = 0; i < 13; i++)
-        {
-            for (int j = 0; j < 13; j++)
-            {
-                for (int k = 0; k < 13; k++)
-                {
-                    for (int l = 0; l < 13; l++)
-                    {
-                        if (i == j || i == k || i == l || j == k || j == l || k == l) continue;
-                        quads[index] = new int[4] {i, j, k, l};
-                        index++;
-                    }
-                }
-            }
-        }
-        return quads;
     }
 
     private static int[] GetFlushLookup()
@@ -204,47 +159,58 @@ public static class Lookup
             score--;
         }
 
-        // Three of a kind
-        score = MaxThreeOfAKind;
-        for (int i = 0; i < DistinctTriples.Length; i++)
-        {
-            int trip = DistinctTriples[i][0];
-            int kicker1 = DistinctTriples[i][1];
-            int kicker2 = DistinctTriples[i][2];
-            int key = Evaluate.GetPrimeKey(new int[] {trip, trip, trip, kicker1, kicker2});
+        // 3 of a kind
+        score = MaxStraight + 1; // Score of highest 3 of a kind (AAAKQ)
 
-            if (repeated.ContainsKey(key)) continue;
-            repeated[key] = score;
-            score--;
+        for (int trip = 12; trip >= 0; trip--)
+        {
+            for (int kicker1 = 12; kicker1 >= 0; kicker1--)
+            {
+                for (int kicker2 = kicker1 - 1; kicker2 >= 0; kicker2--)
+                {
+                    if (trip == kicker1 || trip == kicker2) continue;
+                    int key = Evaluate.GetPrimeKey(new int[] {trip, trip, trip, kicker1, kicker2});
+                    repeated[key] = score;
+                    score++;
+                }
+            }
         }
 
-        // Two pair
-        score = MaxTwoPair;
-        for (int i = 0; i < DistinctTriples.Length; i++)
+        // 2 pair
+        score = MaxThreeOfAKind + 1; // Score of highest 2 pair (AAKKQ)
+        for (int pair1 = 12; pair1 >= 0; pair1--)
         {
-            int pair1 = DistinctTriples[i][0];
-            int pair2 = DistinctTriples[i][1];
-            int kicker = DistinctTriples[i][2];
-            int key = Evaluate.GetPrimeKey(new int[] {pair1, pair1, pair2, pair2, kicker});
+            for (int pair2 = pair1 - 1; pair2 >= 0; pair2--)
+            {
+                for (int kicker = 12; kicker >= 0; kicker--)
+                {
+                    if (kicker == pair1 || kicker == pair2) continue;
 
-            if (repeated.ContainsKey(key)) continue;
-            repeated[key] = score;
-            score--;
+                    int key = Evaluate.GetPrimeKey(new int[] {pair1, pair1, pair2, pair2, kicker});
+                    repeated[key] = score;
+                    score++;
+                }
+            }
         }
 
-        // One pair
-        score = MaxOnePair;
-        for (int i = 0; i < DistinctQuads.Length; i++)
+        // 1 pair
+        score = MaxTwoPair + 1; // Score of highest 1 pair (AAKQJ)
+        for (int pair = 12; pair >= 0; pair--)
         {
-            int pair = DistinctQuads[i][0];
-            int kicker1 = DistinctQuads[i][1];
-            int kicker2 = DistinctQuads[i][2];
-            int kicker3 = DistinctQuads[i][3];
-            int key = Evaluate.GetPrimeKey(new int[] {pair, pair, kicker1, kicker2, kicker3});
+            for (int kicker1 = 12; kicker1 >= 0; kicker1--)
+            {
+                for (int kicker2 = kicker1 - 1; kicker2 >= 0; kicker2--)
+                {
+                    for (int kicker3 = kicker2 - 1; kicker3 >= 0; kicker3--)
+                    {
+                        if (kicker1 == pair || kicker2 == pair || kicker3 == pair) continue;
 
-            if (repeated.ContainsKey(key)) continue;
-            repeated[key] = score;
-            score--;
+                        int key = Evaluate.GetPrimeKey(new int[] {pair, pair, kicker1, kicker2, kicker3});
+                        repeated[key] = score;
+                        score++;
+                    }
+                }
+            }
         }
 
         return repeated;

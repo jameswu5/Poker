@@ -47,4 +47,10 @@ public static class Test
         uint ca = Card.CreateCard('A', 'S');
         Console.WriteLine(Evaluate.Evaluate.GetFlushValue(new uint[] {c9, cj, cq, ck, ca})); // should be 323
     }
+
+    public static void CheckUnique()
+    {
+        Console.WriteLine(Evaluate.Lookup.UniqueLookup[3968]); // should be 1601
+        Console.WriteLine(Evaluate.Lookup.UniqueLookup[47]); // should be 7462
+    }
 }

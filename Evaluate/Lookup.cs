@@ -15,12 +15,14 @@ public static class Lookup
     private const int MaxOnePair = 2860 + MaxTwoPair;
     private const int MaxHighCard = 1277 + MaxOnePair;
 
-    public static int[] FlushLookup;
+    public static readonly int[] FlushLookup; // Stores the values of flushes
+    public static readonly int[] UniqueLookup; // Stores the values of five unique cards
 
     // Initialise Lookup tables
     static Lookup()
     {
         FlushLookup = GetFlushLookup();
+        UniqueLookup = GetUniqueLookup();
     }
 
     public static void Init() {}
@@ -63,6 +65,46 @@ public static class Lookup
 
         return flushes;
     }
+
+    private static int[] GetUniqueLookup()
+    {
+        int[] unique = new int[7937];
+
+        int[] straights = new int[]
+        {
+            0b1111100000000, // royal flush
+            0b0111110000000,
+            0b0011111000000,
+            0b0001111100000,
+            0b0000111110000,
+            0b0000011111000,
+            0b0000001111100,
+            0b0000000111110,
+            0b0000000011111,
+            0b1000000001111, // 5 high straight flush
+        };
+
+        for (int i = 0; i < 10; i++)
+        {
+            unique[straights[i]] = i + MaxFlush + 1;
+        }
+
+        int current = 0b11111;
+        int score = MaxHighCard; // This is the score of the lowest high card hand (23457)
+
+        while (current != 0b1111100000000)
+        {
+            current = GetNextBitPermutation(current);
+            if (unique[current] == 0)
+            {
+                unique[current] = score;
+                score--;
+            }
+        }
+
+        return unique;
+    }
+
 
     // Bit hack from http://www-graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation
     public static int GetNextBitPermutation(int v)

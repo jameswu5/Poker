@@ -13,31 +13,21 @@ public static class Cases
     private static List<int[]> GetCardHands(int cards)
     {
         List<int[]> hands = new();
-
-        string filePath;
-
-        switch (cards)
+        string filePath = cards switch
         {
-            case 5:
-                filePath = filePath5;
-                break;
-            case 6:
-                filePath = filePath6;
-                break;
-            case 7:
-                filePath = filePath7;
-                break;
-            default:
-                throw new Exception("Cards must be 5, 6 or 7.");
-        }
-
+            5 => filePath5,
+            6 => filePath6,
+            7 => filePath7,
+            _ => throw new Exception("Cards must be 5, 6 or 7."),
+        };
         try
         {
             using (StreamReader reader = new(filePath))
             {
                 while (!reader.EndOfStream)
                 {
-                    string line = reader.ReadLine();
+                    string? line = reader.ReadLine();
+                    if (line == null) continue;
                     string[] values = line.Split(',');
                     int[] hand = new int[cards+1];
                     for (int i = 0; i < cards; i++)

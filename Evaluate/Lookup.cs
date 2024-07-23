@@ -16,6 +16,7 @@ public static class Lookup
     public const int MaxHighCard = 1277 + MaxOnePair;
 
     public static readonly int[][] DistinctPairs;
+    public static readonly int[] Straights;
 
     // Key: OR of the ranks of the cards
     public static readonly int[] FlushLookup; // Stores the values of flushes
@@ -28,13 +29,24 @@ public static class Lookup
     // Initialise Lookup tables
     static Lookup()
     {
+        Straights = new int[]
+        {
+            0b1111100000000, // A high straight
+            0b0111110000000,
+            0b0011111000000,
+            0b0001111100000,
+            0b0000111110000,
+            0b0000011111000,
+            0b0000001111100,
+            0b0000000111110,
+            0b0000000011111,
+            0b1000000001111, // 5 high straight
+        };
         DistinctPairs = GetDistinctPairs();
         FlushLookup = GetFlushLookup();
         UniqueLookup = GetUniqueLookup();
         RepeatedLookup = GetRepeatedLookup();
     }
-
-    public static void Init() {}
 
     private static int[][] GetDistinctPairs()
     {
@@ -56,23 +68,9 @@ public static class Lookup
     {
         int[] flushes = new int[7937];
 
-        int[] straightFlushes = new int[]
-        {
-            0b1111100000000, // royal flush
-            0b0111110000000,
-            0b0011111000000,
-            0b0001111100000,
-            0b0000111110000,
-            0b0000011111000,
-            0b0000001111100,
-            0b0000000111110,
-            0b0000000011111,
-            0b1000000001111, // 5 high straight flush
-        };
-
         for (int i = 0; i < 10; i++)
         {
-            flushes[straightFlushes[i]] = i + 1;
+            flushes[Straights[i]] = i + 1;
         }
 
         int current = 0b11111;
@@ -95,23 +93,9 @@ public static class Lookup
     {
         int[] unique = new int[7937];
 
-        int[] straights = new int[]
-        {
-            0b1111100000000, // royal flush
-            0b0111110000000,
-            0b0011111000000,
-            0b0001111100000,
-            0b0000111110000,
-            0b0000011111000,
-            0b0000001111100,
-            0b0000000111110,
-            0b0000000011111,
-            0b1000000001111, // 5 high straight flush
-        };
-
         for (int i = 0; i < 10; i++)
         {
-            unique[straights[i]] = i + MaxFlush + 1;
+            unique[Straights[i]] = i + MaxFlush + 1;
         }
 
         int current = 0b11111;

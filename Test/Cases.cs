@@ -5,17 +5,31 @@ namespace Poker;
 
 public static class Cases
 {
-    private static readonly List<int[]> HandAndValue; // [card1, card2, card3, card4, card5, value]
-    private const string filePath = "Test/5_card_hands.csv"; // taken from https://github.com/HenryRLee/PokerHandEvaluator
-
-    static Cases()
-    {
-        HandAndValue = Get5CardHands();
-    }
+    // Test cases taken from https://github.com/HenryRLee/PokerHandEvaluator/tree/develop/test
+    private const string filePath5 = "Test/5_card_hands.csv";
+    private const string filePath6 = "Test/6_card_hands.csv";
+    private const string filePath7 = "Test/7_card_hands.csv";
     
-    private static List<int[]> Get5CardHands()
+    private static List<int[]> GetCardHands(int cards)
     {
         List<int[]> hands = new();
+
+        string filePath;
+
+        switch (cards)
+        {
+            case 5:
+                filePath = filePath5;
+                break;
+            case 6:
+                filePath = filePath6;
+                break;
+            case 7:
+                filePath = filePath7;
+                break;
+            default:
+                throw new Exception("Cards must be 5, 6 or 7.");
+        }
 
         try
         {
@@ -25,12 +39,12 @@ public static class Cases
                 {
                     string line = reader.ReadLine();
                     string[] values = line.Split(',');
-                    int[] hand = new int[6];
-                    for (int i = 0; i < 5; i++)
+                    int[] hand = new int[cards+1];
+                    for (int i = 0; i < cards; i++)
                     {
                         hand[i] = Card.CreateCard(values[i][0], values[i][1]);
                     }
-                    hand[5] = int.Parse(values[5]);
+                    hand[cards] = int.Parse(values[cards]);
                     hands.Add(hand);
                 }
             }
@@ -43,24 +57,25 @@ public static class Cases
         return hands;
     }
 
-    public static void CheckAll5CardHands()
+    public static void CheckAllCardHands(int cards)
     {
-        int errors = 0;
-        int cases = HandAndValue.Count;
+        List<int[]> handAndValue = GetCardHands(cards);
 
-        for (int i = 0; i < HandAndValue.Count; i++)
+        int errors = 0;
+        int cases = handAndValue.Count;
+
+        for (int i = 0; i < handAndValue.Count; i++)
         {
-            int[] hand = HandAndValue[i];
-            int handValue = Evaluate.Evaluate.EvaluateHand(hand[..5]);
-            if (handValue != hand[5])
+            int[] hand = handAndValue[i];
+            int handValue = Evaluate.Evaluate.EvaluateHand(hand[..cards]);
+            if (handValue != hand[cards])
             {
                 Console.Write("Hand ");
-                Card.Display(hand[0]);
-                Card.Display(hand[1]);
-                Card.Display(hand[2]);
-                Card.Display(hand[3]);
-                Card.Display(hand[4]);
-                Console.WriteLine($"failed (expected {hand[5]}, got {handValue}).");
+                for (int j = 0; j < cards; j++)
+                {
+                    Card.Display(hand[j]);
+                }
+                Console.WriteLine($"failed (expected {hand[cards]}, got {handValue}).");
                 errors++;
             }
         }

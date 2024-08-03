@@ -68,6 +68,14 @@ public class Player
         return new Raise(amount);
     }
 
+    /// <summary>
+    /// Bot logic can come here. Return a decision based on the current state of the game.
+    /// </summary>
+    public Action GetDecision()
+    {
+        throw new NotImplementedException();
+    }
+
     public void AddCard(int card)
     {
         hand.Add(card);

@@ -7,13 +7,15 @@ public class Table
 {
     public List<Player> players;
     public Dealer dealer;
+    public Pot pot;
 
     public List<int> communityCards;
 
-    public Table(List<Player> players)
+    public Table(List<Player> players, Pot pot)
     {
         this.players = players;
         dealer = new();
+        this.pot = pot;
         communityCards = new();
     }
 

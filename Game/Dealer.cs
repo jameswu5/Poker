@@ -35,8 +35,7 @@ public class Dealer
     {
         for (int i = 0; i < cardsToDeal; i++)
         {
-            int card = DealCard();
-            // add this to the table (not implemented yet)
+            table.AddCommunityCard(DealCard());
         }
     }
 

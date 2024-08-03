@@ -8,15 +8,20 @@ public class Player
     public string name;
     public int chips;
     public CardCollection hand;
-
     public bool isActive;
 
-    public Player(string name, int chips)
+    public Pot pot;
+
+    public bool IsAllIn => isActive & chips == 0;
+    public int BetChips => pot[name];
+
+    public Player(string name, int chips, Pot pot)
     {
         this.name = name;
         this.chips = chips;
         hand = new CardCollection();
         isActive = true;
+        this.pot = pot;
     }
 
     public void AddChips(int amount)
@@ -24,20 +29,43 @@ public class Player
         chips += amount;
     }
 
-    public void Fold()
+    public int TryMakeBet(int amount) => Math.Min(amount, chips);
+
+    public int AddToPot(int amount)
+    {
+        amount = TryMakeBet(amount);
+        pot.AddChips(this, amount);
+        chips -= amount;
+        return amount;
+    }
+
+    public Action Fold()
     {
         isActive = false;
-        // might need to return some action here
+        return new Fold();
     }
 
-    public void Call()
+    public Action Call(List<Player> activePlayers)
     {
-        throw new NotImplementedException();
+        if (IsAllIn)
+        {
+            return new Call();
+        }
+
+        int highestBet = activePlayers.Max(player => player.BetChips);
+        int amountToCall = highestBet - BetChips;
+        AddToPot(amountToCall);
+        return new Call();
     }
 
-    public void Raise(int amount)
+    /// <summary>
+    /// Raise the bet to a certain amount.
+    /// </summary>
+    /// <param name="amount">Amount the bet is raised to</param>
+    public Action Raise(int amount)
     {
-        throw new NotImplementedException();
+        AddToPot(amount);
+        return new Raise(amount);
     }
 
     public void AddCard(int card)

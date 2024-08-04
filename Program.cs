@@ -7,6 +7,7 @@ public class Program
 {
     public static void Main()
     {
-        Cases.CheckAllCardHands(7);
+        // Cases.CheckAllCardHands(7);
+        Game.Game.Run();
     }
 }

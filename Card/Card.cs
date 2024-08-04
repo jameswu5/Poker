@@ -98,4 +98,12 @@ public static class Card
 
         Console.Write($"{rank}{SuitDisplayMap[suit]}  ");
     }
+
+    public static string GetString(int card)
+    {
+        char rank = RankMapReverse[(card >> 8) & 0xF];
+        char suit = SuitMapReverse[(card >> 12) & 0xF];
+
+        return $"{rank}{SuitDisplayMap[suit]}";
+    }
 }

@@ -58,6 +58,11 @@ public class Player
         return new Call();
     }
 
+    private int GetAmountToCall()
+    {
+        return pot.pot.Values.Max() - pot[name];
+    }
+
     /// <summary>
     /// Raise the bet to a certain amount.
     /// </summary>
@@ -70,10 +75,30 @@ public class Player
 
     /// <summary>
     /// Bot logic can come here. Return a decision based on the current state of the game.
+    /// Probably should change table to a state type.
     /// </summary>
-    public Action GetDecision()
+    public virtual Action GetDecision(Table table)
     {
-        throw new NotImplementedException();
+        // Barebones implementation
+        Console.WriteLine();
+        Console.WriteLine($"{name} ({chips})");
+        hand.Display();
+        Console.WriteLine($"\nWhat would you like to do?");
+        Console.WriteLine($"[1] Fold, [2] Call ({GetAmountToCall()}), [3] Raise");
+        int choice = int.Parse(Console.ReadLine());
+        switch (choice)
+        {
+            case 1:
+                return new Fold();
+            case 2:
+                return new Call();
+            case 3:
+                Console.WriteLine("How much do you want to raise?");
+                int amount = int.Parse(Console.ReadLine());
+                return new Raise(amount);
+            default:
+                throw new ArgumentException($"Invalid choice ({choice})");
+        }
     }
 
     public void AddCard(int card)

@@ -55,19 +55,26 @@ public class Table
         PayBlinds();
         dealer.DealHoleCards(players);
 
+        DisplayTable();
+
         // Preflop
         PlayBettingRound(Increment(button, 3)); // under the gun starts
 
         // The flop
         dealer.DealFlop(this);
+        DisplayTable();
         PlayBettingRound(Increment(button, 1)); // small blind starts
+
 
         // Deal the turn
         dealer.DealTurn(this);
+        DisplayTable();
         PlayBettingRound(Increment(button, 1));
+
 
         // Deal the river
         dealer.DealRiver(this);
+        DisplayTable();
         PlayBettingRound(Increment(button, 1));
 
         // Determine the winner(s) and distribute chips
@@ -92,15 +99,15 @@ public class Table
         int peopleWithMoves = players.Count(player => player.isActive & !player.IsAllIn);
         if (peopleWithMoves < 2) return;
 
-        do
-        {
-            int index = startIndex;
-            for (int i = 0; i < NumOfPlayers; i++)
-            {
-                Player player = players[index];
-                if (!player.isActive) continue;
+        int index = startIndex;
+        int target = Decrement(startIndex); // if we reach this index, we're done
 
-                Action action = player.GetDecision();
+        while (index != target)
+        {
+            Player player = players[index];
+            if (player.isActive)
+            {
+                Action action = player.GetDecision(this);
                 switch (action)
                 {
                     case Fold _:
@@ -111,32 +118,13 @@ public class Table
                         break;
                     case Raise raise:
                         player.Raise(raise.amount);
+                        target = Decrement(index);
                         break;
                 }
 
-                index = Increment(index);
             }
+            index = Increment(index);
         }
-        while (MoreBettingNeeded());
-    }
-
-    /// <summary>
-    /// Checks if more betting is required (i.e. not all active players bet evenly)
-    /// </summary>
-    /// <returns></returns>
-    private bool MoreBettingNeeded()
-    {
-        List<int> activeBets = new();
-        foreach (Player player in players)
-        {
-            if (player.isActive)
-            {
-                activeBets.Add(player.BetChips);
-            }
-        }
-
-        // return whether all elements in activeBets are the same
-        return activeBets.Distinct().Count() > 1;
     }
 
     /// <summary>
@@ -186,6 +174,8 @@ public class Table
     /// </summary>
     private int Increment(int index, int value = 1) => (index + value) % NumOfPlayers;
 
+    private int Decrement(int index, int value = 1) => (index - value + NumOfPlayers) % NumOfPlayers;
+
     private static int EvaluateHand(CardCollection hand, List<int> communityCards)
     {
         // Shallow copy hand.cards (which is fine as hand.cards contains only integers)
@@ -196,5 +186,19 @@ public class Table
         }
 
         return Evaluate.Evaluate.EvaluateHand(evHand.ToArray());
+    }
+
+
+    private void DisplayTable()
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Pot: {pot.Total}");
+        Console.WriteLine($"{string.Join(", ", communityCards.Select(Card.GetString))}");
+        Console.WriteLine();
+    }
+
+    public override string ToString()
+    {
+        return $"Pot: {pot.Total}\nCards: {string.Join(", ", communityCards.Select(Card.GetString))}";
     }
 }

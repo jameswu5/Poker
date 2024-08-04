@@ -27,7 +27,7 @@ public class Pot
     public List<Pot> GetSidePots()
     {
         // sidePots will be in decreasing order based on how many people can collect this
-        Pot clone = new();
+        Pot clone = Clone();
 
         List<Pot> sidePots = new();
 

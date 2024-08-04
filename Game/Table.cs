@@ -149,8 +149,6 @@ public class Table
         Dictionary<Player, int> payouts = new();
 
         // This whole code is so ugly
-        PriorityQueue<List<Player>, int> playersByHandStrength = new();
-
         Dictionary<int, List<Player>> playersHandStrength = new();
         foreach (Player player in players)
         {
@@ -164,6 +162,9 @@ public class Table
 
             playersHandStrength[handStrength].Add(player);
         }
+
+        // Sort
+        PriorityQueue<List<Player>, int> playersByHandStrength = new();
 
         foreach (KeyValuePair<int, List<Player>> pair in playersHandStrength)
         {

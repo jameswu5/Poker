@@ -244,6 +244,7 @@ public class Table
     {
         Console.WriteLine();
         Console.WriteLine($"Pot: {pot.Total}");
+        Console.WriteLine($"Players remaining: {players.Where(player => player.isActive).Count()}");
         Console.WriteLine($"{string.Join(", ", communityCards.Select(Card.GetString))}");
         Console.WriteLine();
     }

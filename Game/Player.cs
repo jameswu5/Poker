@@ -81,10 +81,11 @@ public class Player
     {
         // Barebones implementation
         Console.WriteLine();
-        Console.WriteLine($"{name} ({chips})");
+        Console.Write($"{name} ({chips}) - ");
         hand.Display();
-        Console.WriteLine($"\nWhat would you like to do?");
-        Console.WriteLine($"[1] Fold, [2] Call ({GetAmountToCall()}), [3] Raise");
+        int owe = GetAmountToCall();
+        string oweString = owe == 0 ? "Check" : $"Call ({owe})";
+        Console.WriteLine($"\n[1] Fold, [2] {oweString}, [3] Raise");
         int choice = int.Parse(Console.ReadLine());
         switch (choice)
         {

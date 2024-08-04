@@ -13,7 +13,7 @@ public class Player
     public Pot pot;
 
     public bool IsAllIn => isActive & chips == 0;
-    public int BetChips => pot[name];
+    public int BetChips => pot[this];
 
     public Player(string name, int chips, Pot pot)
     {
@@ -60,7 +60,7 @@ public class Player
 
     private int GetAmountToCall()
     {
-        return pot.pot.Values.Max() - pot[name];
+        return pot.pot.Values.Max() - pot[this];
     }
 
     /// <summary>

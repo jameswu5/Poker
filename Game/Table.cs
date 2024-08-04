@@ -61,18 +61,21 @@ public class Table
         PlayBettingRound(Increment(button, 3)); // under the gun starts
 
         // The flop
+        Console.WriteLine("\n--THE FLOP--");
         dealer.DealFlop(this);
         DisplayTable();
         PlayBettingRound(Increment(button, 1)); // small blind starts
 
 
         // Deal the turn
+        Console.WriteLine("\n--THE TURN--");
         dealer.DealTurn(this);
         DisplayTable();
         PlayBettingRound(Increment(button, 1));
 
 
         // Deal the river
+        Console.WriteLine("\n--THE RIVER--");
         dealer.DealRiver(this);
         DisplayTable();
         PlayBettingRound(Increment(button, 1));
@@ -132,41 +135,89 @@ public class Table
     /// </summary>
     private void DistributeChips()
     {
-        List<Player> winners = new(); // we might have multiple winners
-        int bestHandEvaluation = int.MaxValue;
+        Dictionary<Player, int> payouts = ComputePayout();
+        foreach (KeyValuePair<Player, int> pair in payouts)
+        {
+            Console.WriteLine($"Player {pair.Key.name} wins {pair.Value}");
+            pair.Key.AddChips(pair.Value);
+        }
+    }
 
+    private Dictionary<Player, int> ComputePayout()
+    {
+        Dictionary<Player, int> payouts = new();
+
+        // This whole code is so ugly
+        PriorityQueue<List<Player>, int> playersByHandStrength = new();
+
+        Dictionary<int, List<Player>> playersHandStrength = new();
         foreach (Player player in players)
         {
             if (!player.isActive) continue;
 
-            // if this is preflop, we have a winner as soon as we see an active player
-            if (communityCards.Count == 0)
+            int handStrength = EvaluateHand(player.hand, communityCards);
+            if (!playersHandStrength.ContainsKey(handStrength))
             {
-                winners.Add(player);
+                playersHandStrength[handStrength] = new();
+            }
+
+            playersHandStrength[handStrength].Add(player);
+        }
+
+        foreach (KeyValuePair<int, List<Player>> pair in playersHandStrength)
+        {
+            playersByHandStrength.Enqueue(pair.Value, pair.Key);
+        }
+
+        List<List<Player>> ranking = new();
+        while (playersByHandStrength.Count > 0)
+        {
+            ranking.Add(playersByHandStrength.Dequeue());
+        }
+
+        List<Pot> sidePots = pot.GetSidePots();
+        foreach (Pot sidePot in sidePots)
+        {
+            // for debugging purposes
+            bool distributed = false;
+
+            // Give side pot to player(s) with the best hand
+            for (int i = 0; i < ranking.Count; i++)
+            {
+                List<Player> eligible = new();
+                foreach (Player player in ranking[i])
+                {
+                    if (sidePot.Contains(player))
+                    {
+                        eligible.Add(player);
+                    }
+                }
+
+                if (eligible.Count == 0) continue;
+
+                int winnings = sidePot.Total / eligible.Count;
+                foreach (Player player in eligible)
+                {
+                    if (!payouts.ContainsKey(player))
+                    {
+                        payouts[player] = 0;
+                    }
+
+                    payouts[player] += winnings;
+                }
+
+                distributed = true;
                 break;
             }
 
-            int evaluation = EvaluateHand(player.hand, communityCards);
-            if (evaluation < bestHandEvaluation)
+            // if we get here, something has gone wrong
+            if (!distributed)
             {
-                winners.Clear();
-                winners.Add(player);
-                bestHandEvaluation = evaluation;
-            }
-            else if (evaluation == bestHandEvaluation)
-            {
-                winners.Add(player);
+                throw new Exception("No eligible player in side pot");
             }
         }
 
-        // Distribute the chips - this only works in event of no side pot
-        int winnings = pot.Total / winners.Count;
-        foreach (Player winner in winners)
-        {
-            winner.AddChips(winnings);
-        }
-
-        // TODO: Implement side pots
+        return payouts;
     }
 
     /// <summary>

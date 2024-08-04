@@ -103,9 +103,9 @@ public class Table
         if (peopleWithMoves < 2) return;
 
         int index = startIndex;
-        int target = Decrement(startIndex); // if we reach this index, we're done
+        int target = startIndex; // if we reach this index, we're done
 
-        while (index != target)
+        do
         {
             Player player = players[index];
             if (player.isActive)
@@ -121,13 +121,14 @@ public class Table
                         break;
                     case Raise raise:
                         player.Raise(raise.amount);
-                        target = Decrement(index);
+                        target = index;
                         break;
                 }
 
             }
             index = Increment(index);
         }
+        while (index != target);
     }
 
     /// <summary>
@@ -224,8 +225,6 @@ public class Table
     /// Increments the index by some value while not going out of range
     /// </summary>
     private int Increment(int index, int value = 1) => (index + value) % NumOfPlayers;
-
-    private int Decrement(int index, int value = 1) => (index - value + NumOfPlayers) % NumOfPlayers;
 
     private static int EvaluateHand(CardCollection hand, List<int> communityCards)
     {

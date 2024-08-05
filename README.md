@@ -53,3 +53,7 @@ If it’s not a flush, we check if all five cards are distinct. If so, we return
 If they’re not distinct either, we calculate the key `q = (c1 & 0xFF) * (c2 & 0xFF) * ... * (c5 & 0xFF)`. We simply return `RepeatedLookup[q]` and we’re done.
 
 In games like Texas Hold’em, if we would like to evaluate a hand of seven cards, we simply iterate through all possible $7 \choose 5$ combinations of five cards and return the best hand value out of these.
+
+## Resources I used
+
+[Cactus Kev’s Poker Evaluator](http://suffe.cool/poker/evaluator.html) - algorithm for evaluating Poker hands

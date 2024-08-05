@@ -54,6 +54,8 @@ If they’re not distinct either, we calculate the key `q = (c1 & 0xFF) * (c2 & 
 
 In games like Texas Hold’em, if we would like to evaluate a hand of seven cards, we simply iterate through all possible $7 \choose 5$ combinations of five cards and return the best hand value out of these.
 
-## Resources I used
+## Resources
 
-[Cactus Kev’s Poker Evaluator](http://suffe.cool/poker/evaluator.html) - algorithm for evaluating Poker hands
+[Cactus Kev’s Poker Hand Evaluator](http://suffe.cool/poker/evaluator.html)
+
+[Bit Twiddling Hacks](http://www-graphics.stanford.edu/~seander/bithacks.html#NextBitPermutation)

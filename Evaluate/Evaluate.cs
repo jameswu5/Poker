@@ -13,7 +13,7 @@ public static class Evaluate
         int key = 0xF000;
         for (int i = 0; i < cards.Length; i++)
         {
-            key &= cards[i] & 0xF000;
+            key &= cards[i];
         }
         return key > 0;
     }

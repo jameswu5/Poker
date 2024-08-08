@@ -5,9 +5,9 @@ namespace Poker.UI;
 
 public class TableUI
 {
-    private readonly Game.Table table;
+    private readonly Core.Table table;
 
-    public TableUI(Game.Table table)
+    public TableUI(Core.Table table)
     {
         this.table = table;
     }

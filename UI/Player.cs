@@ -22,6 +22,7 @@ public class PlayerUI
     public void Display()
     {
         DisplayPlayerCards(seat == 0);
+        DisplayPlayerStack();
     }
 
     private void DisplayPlayerCards(bool showCards)
@@ -35,5 +36,12 @@ public class PlayerUI
             int y = positions[i][1];
             img.Draw(x, y);
         }
+    }
+
+    private void DisplayPlayerStack()
+    {
+        string text = $"Stack: {player.chips}";
+        int posY = seat == 0 ? Settings.ScreenHeight - Settings.Card.HoleCardPaddingY : 0;
+        Text.DisplayCentralText(text, Settings.FontSize, 0, posY, Settings.ScreenWidth, Settings.Card.HoleCardPaddingY, Settings.Palette.White);
     }
 }

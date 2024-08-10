@@ -9,6 +9,8 @@ public static class Settings
     public const int ScreenHeight = 720;
     public static readonly Color ScreenColour = Palette.Black;
 
+    public const int FontSize = 28;
+
     public static class Palette
     {
         public static Color ParseHexCode(string hexCode, int alpha = 255)
@@ -53,7 +55,7 @@ public static class Settings
         };
 
         // Calculate positions of each player hole card (not the border box)
-        private const int HoleCardPaddingY = 60;
+        public const int HoleCardPaddingY = 60;
         private const int LeftCardWidthPercent = 40;
         private const int LeftCardWidth = Width * LeftCardWidthPercent / 100;
         private const int HoleCardWidth = LeftCardWidth + Width;

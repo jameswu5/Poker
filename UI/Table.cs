@@ -41,6 +41,10 @@ public class TableUI
 
     private void DisplayCommunityCards()
     {
-        // throw new NotImplementedException();
+        for (int i = 0; i < table.communityCards.Count; i++)
+        {
+            Image img = Card.GetImage(table.communityCards[i]);
+            img.Draw(Settings.Card.CommunityCardPositions[i][0], Settings.Card.CommunityCardPositions[i][1]);
+        }
     }
 }

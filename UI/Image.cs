@@ -25,6 +25,6 @@ public class Image
 
     public void Draw(int posX, int posY)
     {
-        DrawTexture(texture, posX, posY, Settings.Palette.White);
+        DrawTexture(texture, posX, posY, White);
     }
 }

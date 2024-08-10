@@ -5,6 +5,7 @@ namespace Poker.UI;
 public static class Card
 {
     public static readonly List<Image> images;
+    public static readonly Image back;
 
     public static readonly Dictionary<char, int> SuitMap = new()
     {
@@ -39,6 +40,8 @@ public static class Card
             string path = $"img/cards/{i}.png";
             images.Add(new Image(path, Settings.Card.Width, Settings.Card.Height));
         }
+
+        back = new Image("img/cards/back.png", Settings.Card.Width, Settings.Card.Height);
     }
 
     public static Image GetImage(int card)

@@ -17,16 +17,9 @@ public class Program
 
     public static void RunGame()
     {
-        Core.Pot pot = new();
-        List<Core.Player> players = new()
-        {
-            new Core.Player("Alice", 200, pot),
-            new Core.Player("Bob", 200, pot),
-            new Core.Player("Charlie", 200, pot)
-        };
-
-        Core.Table table = new(players, pot, 1, 2);
-        table.PlayRound();
+        List<string> playerNames = new() { "Alice", "Beth", "Claire" };
+        Game game = new(playerNames);
+        game.table.PlayRound();
     }
 
     public static void RunGameWithUI()
@@ -34,13 +27,15 @@ public class Program
         InitWindow(ScreenWidth, ScreenHeight, "Poker");
         SetTargetFPS(60);
 
+        List<string> playerNames = new() { "Alice", "Beth", "Claire" };
+        Game game = new(playerNames);
 
         while (!WindowShouldClose())
         {
             BeginDrawing();
             ClearBackground(ScreenColour);
 
-
+            game.Display();
 
             EndDrawing();
         }

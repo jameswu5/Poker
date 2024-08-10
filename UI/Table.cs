@@ -20,11 +20,27 @@ public class TableUI
 
     private void DisplayEmptyTable()
     {
-        throw new NotImplementedException();
+        // draw the community card borders
+        for (int i = 0; i < 5; i++)
+        {
+            int x = Settings.Card.CommunityCardPositions[i][0] - Settings.Card.Border;
+            int y = Settings.Card.CommunityCardPositions[i][1] - Settings.Card.Border;
+            int w = Settings.Card.Width + 2 * Settings.Card.Border;
+            int h = Settings.Card.Height + 2 * Settings.Card.Border;
+            Raylib.DrawRectangle(x, y, w, h, Settings.Palette.Gold);
+        }
+
+        // draw the community card positions
+        for (int i = 0; i < 5; i++)
+        {
+            int x = Settings.Card.CommunityCardPositions[i][0];
+            int y = Settings.Card.CommunityCardPositions[i][1];
+            Raylib.DrawRectangle(x, y, Settings.Card.Width, Settings.Card.Height, Settings.Palette.Black);
+        }
     }
 
     private void DisplayCommunityCards()
     {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
     }
 }

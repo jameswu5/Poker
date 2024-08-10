@@ -9,6 +9,9 @@ public class Game
     public Table table;
     public TableUI tableUI;
 
+    public List<Player> players;
+    public List<PlayerUI> playerUIs;
+
     private readonly int smallBlind;
     private readonly int bigBlind;
 
@@ -18,10 +21,13 @@ public class Game
         this.bigBlind = bigBlind;
 
         Pot pot = new();
-        List<Player> players = new();
-        foreach (string name in playerNames)
+        players = new();
+        playerUIs = new();
+        for (int i = 0; i < playerNames.Count; i++)
         {
-            players.Add(new Player(name, startingChips, pot));
+            Player player = new(playerNames[i], startingChips, pot);
+            players.Add(player);
+            playerUIs.Add(new PlayerUI(player, i));
         }
         table = new Table(players, pot, smallBlind, bigBlind);
         tableUI = new TableUI(table);
@@ -30,6 +36,10 @@ public class Game
     public void Display()
     {
         tableUI.Display();
+        foreach (PlayerUI playerUI in playerUIs)
+        {
+            playerUI.Display();
+        }
     }
 
     public void Update()

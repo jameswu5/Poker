@@ -27,7 +27,7 @@ public class Program
         InitWindow(ScreenWidth, ScreenHeight, "Poker");
         SetTargetFPS(60);
 
-        List<string> playerNames = new() { "Alice", "Beth", "Claire" };
+        List<string> playerNames = new() { "Alice", "Beth" };
         Game game = new(playerNames);
 
         while (!WindowShouldClose())

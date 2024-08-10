@@ -29,7 +29,6 @@ public static class Settings
         public static readonly Color Beige = ParseHexCode("faebcd");
         public static readonly Color Gold = ParseHexCode("f7c873");
         public static readonly Color Black = ParseHexCode("434343");
-
     }
 
     public static class Card
@@ -40,7 +39,6 @@ public static class Settings
         public const int Spacing = 12;
 
         // Calculate positions of each community card (not the border box)
-
         private const int CCardPosX = ScreenWidth / 2 - Width / 2;
         private const int CCardPosY = ScreenHeight / 2 - Height / 2;
         private const int CCardSpacing = Width + Spacing + 2 * Border;
@@ -52,6 +50,24 @@ public static class Settings
             new int[] {CCardPosX, CCardPosY},
             new int[] {CCardPosX + CCardSpacing, CCardPosY},
             new int[] {CCardPosX + CCardSpacing * 2, CCardPosY},
+        };
+
+        // Calculate positions of each player hole card (not the border box)
+        private const int HoleCardPaddingY = 60;
+        private const int LeftCardWidthPercent = 40;
+        private const int LeftCardWidth = Width * LeftCardWidthPercent / 100;
+        private const int HoleCardWidth = LeftCardWidth + Width;
+
+        public static readonly int[][] PlayerHoleCardPositions = new int[][]
+        {
+            new int[] {(ScreenWidth - HoleCardWidth) / 2, ScreenHeight - Height - HoleCardPaddingY},
+            new int[] {(ScreenWidth - HoleCardWidth) / 2 + LeftCardWidth, ScreenHeight - Height - HoleCardPaddingY},
+        };
+
+        public static readonly int[][] BotHoleCardPositions = new int[][]
+        {
+            new int[] {(ScreenWidth - HoleCardWidth) / 2, HoleCardPaddingY},
+            new int[] {(ScreenWidth - HoleCardWidth) / 2 + LeftCardWidth, HoleCardPaddingY},
         };
     }
 }

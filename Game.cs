@@ -1,7 +1,6 @@
 using System;
 using Poker.Core;
 using Poker.UI;
-using static Poker.UI.Settings.Palette;
 
 namespace Poker;
 
@@ -16,7 +15,9 @@ public class Game
     private readonly int smallBlind;
     private readonly int bigBlind;
 
-    private List<Button> buttons;
+    private FoldButton foldButton;
+    private CallButton callButton;
+    private RaiseButton raiseButton;
 
     public Game(List<string> playerNames, int startingChips = 200, int smallBlind = 1, int bigBlind = 2)
     {
@@ -36,12 +37,9 @@ public class Game
         tableUI = new TableUI(table);
 
         // Create buttons
-        buttons = new()
-        {
-            MakeChoiceButton("Fold"),
-            MakeChoiceButton("Call"),
-            MakeChoiceButton("Raise")
-        };
+        foldButton = (FoldButton) MakeChoiceButton("Fold");
+        callButton = (CallButton) MakeChoiceButton("Call");
+        raiseButton = (RaiseButton) MakeChoiceButton("Raise");
     }
 
     public void Display()
@@ -51,10 +49,9 @@ public class Game
         {
             playerUI.Display();
         }
-        foreach (Button button in buttons)
-        {
-            button.Render();
-        }
+        foldButton.Render();
+        callButton.Render();
+        raiseButton.Render();
     }
 
     public void Update()
@@ -65,21 +62,22 @@ public class Game
     private Button MakeChoiceButton(string choice)
     {
         int[][] bp = Settings.Button.ButtonPositions;
-        int index = choice switch
+
+        Button button = choice switch
         {
-            "Fold" => 0,
-            "Call" => 1,
-            "Raise" => 2,
+            "Fold" => new FoldButton(bp[0][0], bp[0][1]),
+            "Call" => new CallButton(bp[1][0], bp[1][1]),
+            "Raise" => new RaiseButton(bp[2][0], bp[2][1]),
             _ => throw new Exception($"Invalid choice: {choice}"),
         };
+
         ButtonAction buttonAction = new ButtonAction(choice);
-        HoverButton button = new HoverButton(bp[index][0], bp[index][1], Settings.Button.Width, Settings.Button.Height, White, Beige, Black, choice, choice, Settings.FontSize);
         button.action = buttonAction;
         button.OnClick += () => ExecuteButtonAction(buttonAction);
         return button;
     }
 
-    public void ExecuteButtonAction(ButtonAction buttonAction)
+    private void ExecuteButtonAction(ButtonAction buttonAction)
     {
         Console.WriteLine($"{buttonAction.choice} {buttonAction.amount}");
     }

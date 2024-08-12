@@ -19,6 +19,8 @@ public class Game
     private CallButton callButton;
     private RaiseButton raiseButton;
 
+    private Slider slider;
+
     public Game(List<string> playerNames, int startingChips = 200, int smallBlind = 1, int bigBlind = 2)
     {
         this.smallBlind = smallBlind;
@@ -40,6 +42,9 @@ public class Game
         foldButton = (FoldButton) MakeChoiceButton("Fold");
         callButton = (CallButton) MakeChoiceButton("Call");
         raiseButton = (RaiseButton) MakeChoiceButton("Raise");
+
+        // Slider
+        slider = new Slider(Settings.Slider.PosX, Settings.Slider.PosY, Settings.Slider.Length, Settings.Slider.IsHorizontal, 0.7);
     }
 
     public void Display()
@@ -52,6 +57,8 @@ public class Game
         foldButton.Render();
         callButton.Render();
         raiseButton.Render();
+
+        slider.Render();
     }
 
     public void Update()

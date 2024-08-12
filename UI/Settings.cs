@@ -85,8 +85,8 @@ public static class Settings
         public const int SidePadding = 100;
 
         // Calculate positions of each button
-        private const int PosX = ScreenWidth - Width - SidePadding;
-        private const int PosY = ScreenHeight - BottomPadding - 3 * Height - 2 * HeightPadding;
+        public const int PosX = ScreenWidth - Width - SidePadding;
+        public const int PosY = ScreenHeight - BottomPadding - 3 * Height - 2 * HeightPadding;
 
         public static readonly int[][] ButtonPositions = new int[][]
         {
@@ -94,5 +94,17 @@ public static class Settings
             new int[] {PosX, PosY + Height + HeightPadding},
             new int[] {PosX, PosY + 2 * (Height + HeightPadding)},
         };
+    }
+
+    public class Slider
+    {
+        public const int PosX = ScreenWidth - Button.SidePadding / 2;
+        public const int PosY = Button.PosY;
+        public const int Length = 3 * Button.Height + 2 * Button.HeightPadding;
+        public const bool IsHorizontal = false;
+        public const int Thickness = 6;
+        public const int Radius = 8;
+        public static readonly Color Colour = Palette.White;
+        public static readonly Color FilledColour = Palette.Gold;
     }
 }

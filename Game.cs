@@ -36,12 +36,11 @@ public class Game
         tableUI = new TableUI(table);
 
         // Create buttons
-        int[][] bp = Settings.Button.ButtonPositions;
         buttons = new()
         {
-            new HoverButton(bp[0][0], bp[0][1], Settings.Button.Width, Settings.Button.Height, White, Beige, Black, "Fold", "Fold", Settings.FontSize),
-            new HoverButton(bp[1][0], bp[1][1], Settings.Button.Width, Settings.Button.Height, White, Beige, Black, "Call", "Call", Settings.FontSize),
-            new HoverButton(bp[2][0], bp[2][1], Settings.Button.Width, Settings.Button.Height, White, Beige, Black, "Raise", "Raise", Settings.FontSize),
+            MakeChoiceButton("Fold"),
+            MakeChoiceButton("Call"),
+            MakeChoiceButton("Raise")
         };
     }
 
@@ -61,5 +60,27 @@ public class Game
     public void Update()
     {
         Display();
+    }
+
+    private Button MakeChoiceButton(string choice)
+    {
+        int[][] bp = Settings.Button.ButtonPositions;
+        int index = choice switch
+        {
+            "Fold" => 0,
+            "Call" => 1,
+            "Raise" => 2,
+            _ => throw new Exception($"Invalid choice: {choice}"),
+        };
+        ButtonAction buttonAction = new ButtonAction(choice);
+        HoverButton button = new HoverButton(bp[index][0], bp[index][1], Settings.Button.Width, Settings.Button.Height, White, Beige, Black, choice, choice, Settings.FontSize);
+        button.action = buttonAction;
+        button.OnClick += () => ExecuteButtonAction(buttonAction);
+        return button;
+    }
+
+    public void ExecuteButtonAction(ButtonAction buttonAction)
+    {
+        Console.WriteLine($"{buttonAction.choice} {buttonAction.amount}");
     }
 }

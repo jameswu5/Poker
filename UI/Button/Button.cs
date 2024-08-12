@@ -7,6 +7,7 @@ namespace Poker.UI;
 public abstract class Button
 {
     public event System.Action OnClick;
+    public ButtonAction action;
 
     protected string name;
     protected string text;
@@ -65,8 +66,7 @@ public abstract class Button
 
     protected virtual void PressedDisplay() => HoverDisplay();
 
-    // protected virtual void Click() => OnClick.Invoke();
-    protected virtual void Click() {}
+    protected virtual void Click() => OnClick.Invoke();
 
     public void Activate() => activated = true;
 

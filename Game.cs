@@ -38,13 +38,14 @@ public class Game
         table = new Table(players, pot, smallBlind, bigBlind);
         tableUI = new TableUI(table);
 
+        // Slider
+        slider = new Slider(Settings.Slider.PosX, Settings.Slider.PosY, Settings.Slider.Length, Settings.Slider.IsHorizontal);
+
         // Create buttons
         foldButton = (FoldButton) MakeChoiceButton("Fold");
         callButton = (CallButton) MakeChoiceButton("Call");
         raiseButton = (RaiseButton) MakeChoiceButton("Raise");
 
-        // Slider
-        slider = new Slider(Settings.Slider.PosX, Settings.Slider.PosY, Settings.Slider.Length, Settings.Slider.IsHorizontal, 0.7);
     }
 
     public void Display()
@@ -74,7 +75,7 @@ public class Game
         {
             "Fold" => new FoldButton(bp[0][0], bp[0][1]),
             "Call" => new CallButton(bp[1][0], bp[1][1]),
-            "Raise" => new RaiseButton(bp[2][0], bp[2][1]),
+            "Raise" => new RaiseButton(bp[2][0], bp[2][1], slider),
             _ => throw new Exception($"Invalid choice: {choice}"),
         };
 

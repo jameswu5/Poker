@@ -9,8 +9,8 @@ namespace Poker.UI;
 /// </summary>
 public class HoverButton : RectangularButton
 {
-    private Color colour;
-    private Color hoverColour;
+    protected Color colour;
+    protected Color hoverColour;
 
     public HoverButton(int posX, int posY, int width, int height, Color colour, Color hoverColour, Color? textColour = null, string? name = null, string? text = null, int? fontSize = null) : base(posX, posY, width, height, name, text, textColour, fontSize)
     {

@@ -6,17 +6,13 @@ namespace Poker.UI;
 
 public class Slider
 {
-    private enum SliderState
-    {
-        Idle,
-        Dragging
-    }
+    private enum SliderState { Idle, Dragging }
 
     private readonly int posX;
     private readonly int posY;
     private readonly int length;
     private readonly bool isHorizontal;
-    private double val; // 0 to 1
+    public double val; // 0 to 1
 
     private bool activated;
     private SliderState state;

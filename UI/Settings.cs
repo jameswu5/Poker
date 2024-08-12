@@ -31,6 +31,8 @@ public static class Settings
         public static readonly Color Beige = ParseHexCode("faebcd");
         public static readonly Color Gold = ParseHexCode("f7c873");
         public static readonly Color Black = ParseHexCode("434343");
+
+        public static readonly Color Pressed = new(0, 0, 0, 50);
     }
 
     public static class Card
@@ -71,5 +73,10 @@ public static class Settings
             new int[] {(ScreenWidth - HoleCardWidth) / 2, HoleCardPaddingY},
             new int[] {(ScreenWidth - HoleCardWidth) / 2 + LeftCardWidth, HoleCardPaddingY},
         };
+    }
+
+    public static class Button
+    {
+        
     }
 }

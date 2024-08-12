@@ -22,7 +22,7 @@ public static class Text
     /// <summary>
     /// Get the coordinates to display text in the centre of the box defined by the parameters.
     /// </summary>
-    private static (int, int) GetTextPositions(string text, int width, int height, int fontSize)
+    public static (int, int) GetTextPositions(string text, int width, int height, int fontSize)
     {
         Vector2 textSize = Raylib.MeasureTextEx(font, text, fontSize, spacing);
         int x = (width - (int)textSize.X) >> 1;

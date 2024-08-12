@@ -32,7 +32,6 @@ public class RectangularButton : Button
     protected override void DisplayText()
     {
         if (text.Length == 0) return;
-        (int x, int y) = Text.GetTextPositions(text, width, height, fontSize);
-        Raylib.DrawText(text, x + posX, y + posY, fontSize, textColour);
+        Text.DisplayCentralText(text, fontSize, posX, posY, width, height, textColour);
     }
 }

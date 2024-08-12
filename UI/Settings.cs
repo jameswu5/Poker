@@ -77,6 +77,22 @@ public static class Settings
 
     public static class Button
     {
-        
+        public const int Width = 180;
+        public const int Height = 50;
+        public const int HeightPadding = 20;
+
+        public const int BottomPadding = 40;
+        public const int SidePadding = 100;
+
+        // Calculate positions of each button
+        private const int PosX = ScreenWidth - Width - SidePadding;
+        private const int PosY = ScreenHeight - BottomPadding - 3 * Height - 2 * HeightPadding;
+
+        public static readonly int[][] ButtonPositions = new int[][]
+        {
+            new int[] {PosX, PosY},
+            new int[] {PosX, PosY + Height + HeightPadding},
+            new int[] {PosX, PosY + 2 * (Height + HeightPadding)},
+        };
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Poker.Game;
+namespace Poker.Core;
 
 public class Dealer
 {

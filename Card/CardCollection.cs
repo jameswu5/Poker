@@ -15,6 +15,12 @@ public class CardCollection
         cards = new List<int>();
     }
 
+    public int this[int index]
+    {
+        get => cards[index];
+        set => cards[index] = value;
+    }
+
     public void Add(int card)
     {
         cards.Add(card);

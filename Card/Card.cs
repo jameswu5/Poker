@@ -73,11 +73,21 @@ public static class Card
         {'C', '♣'}
     };
 
+    public static char GetSuit(int card)
+    {
+        return SuitMapReverse[(card >> 12) & 0xF];
+    }
+
+    public static char GetRank(int card)
+    {
+        return RankMapReverse[(card >> 8) & 0xF];
+    }
+
     public static int CreateCard(char rank, char suit)
     {
         int card = 0;
 
-        card |= (int)1 << (int)RankMap[rank];
+        card |= 1 << RankMap[rank];
         card <<= 4;
 
         card |= SuitMap[suit];

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Poker.UI;
 
-namespace Poker.Game;
+namespace Poker.Core;
 
 public class Player
 {

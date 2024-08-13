@@ -207,7 +207,7 @@ public class Table
                 playersLeft--;
                 break;
             case Call _:
-                players[playerToMove].Call(players.Where(player => player.stillPlaying).ToList());
+                players[playerToMove].Call();
                 break;
             case Raise raise:
                 players[playerToMove].Raise(raise.amount);

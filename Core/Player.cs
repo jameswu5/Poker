@@ -52,20 +52,18 @@ public abstract class Player
         return new Fold();
     }
 
-    public Action Call(List<Player> activePlayers)
+    public Action Call()
     {
         if (IsAllIn)
         {
             return new Call();
         }
 
-        int highestBet = activePlayers.Max(player => player.BetChips);
-        int amountToCall = highestBet - BetChips;
-        AddToPot(amountToCall);
+        AddToPot(GetAmountToCall());
         return new Call();
     }
 
-    private int GetAmountToCall()
+    protected int GetAmountToCall()
     {
         return pot.pot.Values.Max() - pot[this];
     }

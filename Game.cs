@@ -13,9 +13,6 @@ public class Game
     public List<Core.Player> players;
     public List<PlayerUI> playerUIs;
 
-    private readonly int smallBlind;
-    private readonly int bigBlind;
-
     private FoldButton foldButton;
     private CallButton callButton;
     private RaiseButton raiseButton;
@@ -24,8 +21,13 @@ public class Game
 
     public Game(List<string> playerNames, int startingChips = 200, int smallBlind = 1, int bigBlind = 2)
     {
-        this.smallBlind = smallBlind;
-        this.bigBlind = bigBlind;
+        // Slider
+        slider = new Slider(Settings.Slider.PosX, Settings.Slider.PosY, Settings.Slider.Length, Settings.Slider.IsHorizontal);
+
+        // Create buttons
+        foldButton = (FoldButton) MakeChoiceButton("Fold");
+        callButton = (CallButton) MakeChoiceButton("Call");
+        raiseButton = (RaiseButton) MakeChoiceButton("Raise");
 
         Pot pot = new();
         players = new();
@@ -39,14 +41,6 @@ public class Game
 
         table = new Table(players, pot, smallBlind, bigBlind);
         tableUI = new TableUI(table);
-
-        // Slider
-        slider = new Slider(Settings.Slider.PosX, Settings.Slider.PosY, Settings.Slider.Length, Settings.Slider.IsHorizontal);
-
-        // Create buttons
-        foldButton = (FoldButton) MakeChoiceButton("Fold");
-        callButton = (CallButton) MakeChoiceButton("Call");
-        raiseButton = (RaiseButton) MakeChoiceButton("Raise");
     }
 
     public void StartGame()
@@ -92,7 +86,7 @@ public class Game
     }
 
     // This isn't strictly needed but is more convenient
-    public void MakeMove(Core.Action action)
+    private void MakeMove(Core.Action action)
     {
         table.MakeMove(action);
     }
@@ -104,7 +98,7 @@ public class Game
     {
         Core.Player player = type switch
         {
-            Core.Player.Type.Human => new Human(name, chips, pot),
+            Core.Player.Type.Human => new Human(name, chips, pot, callButton, raiseButton),
             _ => throw new Exception($"Invalid player type: {type}"),
         };
 

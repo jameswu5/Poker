@@ -65,7 +65,8 @@ public abstract class Player
 
     protected int GetAmountToCall()
     {
-        return pot.pot.Values.Max() - pot[this];
+        int amount = pot.pot.Values.Max() - pot[this];
+        return Math.Min(amount, chips);
     }
 
     /// <summary>

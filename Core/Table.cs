@@ -192,6 +192,8 @@ public class Table
         stage = Stage.Preflop;
 
         playerToMove = Increment(button, 3);
+        terminatingTarget = playerToMove;
+
         players[playerToMove].TurnToMove();
     }
 
@@ -230,7 +232,7 @@ public class Table
                 break;
             }
         }
-        while (!players[playerToMove].isActive);
+        while (!players[playerToMove].stillPlaying);
 
         // end game early if there is only one player left
         if (playersLeft == 1)

@@ -22,8 +22,7 @@ public class Program
 
         List<string> playerNames = new() { "Alice", "Beth" };
         Game game = new(playerNames);
-        game.table.dealer.DealHoleCards(game.players);
-        game.table.dealer.DealFlop(game.table);
+        game.StartGame();
 
         while (!WindowShouldClose())
         {

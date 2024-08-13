@@ -80,12 +80,6 @@ public abstract class Player
         return new Raise(amount);
     }
 
-    /// <summary>
-    /// Bot logic can come here. Return a decision based on the current state of the game.
-    /// Probably should change table to a state type.
-    /// </summary>
-    public abstract Action GetDecision(Table table);
-
     public void AddCard(int card)
     {
         hand.Add(card);

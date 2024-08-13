@@ -1,5 +1,6 @@
 using System;
 using Poker.Core;
+using Poker.Player;
 using Poker.UI;
 
 namespace Poker;
@@ -29,12 +30,13 @@ public class Game
         Pot pot = new();
         players = new();
         playerUIs = new();
-        for (int i = 0; i < playerNames.Count; i++)
+
+        // For now just stick with humans
+        foreach (string name in playerNames)
         {
-            Player.Human player = new(playerNames[i], startingChips, pot);
-            players.Add(player);
-            playerUIs.Add(new PlayerUI(player, i));
+            CreatePlayer(name, startingChips, pot, Core.Player.Type.Human);
         }
+
         table = new Table(players, pot, smallBlind, bigBlind);
         tableUI = new TableUI(table);
 
@@ -45,7 +47,11 @@ public class Game
         foldButton = (FoldButton) MakeChoiceButton("Fold");
         callButton = (CallButton) MakeChoiceButton("Call");
         raiseButton = (RaiseButton) MakeChoiceButton("Raise");
+    }
 
+    public void StartGame()
+    {
+        table.NewRound();
     }
 
     public void Display()
@@ -85,8 +91,49 @@ public class Game
         return button;
     }
 
+    // This isn't strictly needed but is more convenient
+    public void MakeMove(Core.Action action)
+    {
+        table.MakeMove(action);
+    }
+
+    /// <summary>
+    /// Creates a player and UI and adds it to the game.
+    /// </summary>
+    private void CreatePlayer(string name, int chips, Pot pot,  Core.Player.Type type)
+    {
+        Core.Player player = type switch
+        {
+            Core.Player.Type.Human => new Human(name, chips, pot),
+            _ => throw new Exception($"Invalid player type: {type}"),
+        };
+
+        player.PlayAction += MakeMove;
+
+        players.Add(player);
+        playerUIs.Add(new PlayerUI(player, playerUIs.Count));
+    }
+
     private void ExecuteButtonAction(ButtonAction buttonAction)
     {
         Console.WriteLine($"{buttonAction.choice} {buttonAction.amount}");
+
+        if (players[table.playerToMove] is Human player)
+        {
+            switch (buttonAction.choice)
+            {
+                case "Fold":
+                    player.Decided(new Fold());
+                    break;
+                case "Call":
+                    player.Decided(new Call());
+                    break;
+                case "Raise":
+                    player.Decided(new Raise(buttonAction.amount));
+                    break;
+                default:
+                    throw new Exception($"Invalid choice: {buttonAction.choice}");
+            }
+        }
     }
 }

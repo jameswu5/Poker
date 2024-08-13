@@ -40,7 +40,7 @@ public class Table
         foreach (Player player in players)
         {
             player.hand.Clear();
-            player.isActive = true;
+            player.stillPlaying = true;
         }
         pot.Reset();
     }
@@ -99,7 +99,7 @@ public class Table
     public void PlayBettingRound(int startIndex)
     {
         // Get people with moves to play
-        int peopleWithMoves = players.Count(player => player.isActive & !player.IsAllIn);
+        int peopleWithMoves = players.Count(player => player.stillPlaying & !player.IsAllIn);
         if (peopleWithMoves < 2) return;
 
         int index = startIndex;
@@ -108,7 +108,7 @@ public class Table
         do
         {
             Player player = players[index];
-            if (player.isActive)
+            if (player.stillPlaying)
             {
                 Action action = player.GetDecision(this);
                 switch (action)
@@ -117,7 +117,7 @@ public class Table
                         player.Fold();
                         break;
                     case Call _:
-                        player.Call(players.Where(player => player.isActive).ToList());
+                        player.Call(players.Where(player => player.stillPlaying).ToList());
                         break;
                     case Raise raise:
                         player.Raise(raise.amount);
@@ -152,7 +152,7 @@ public class Table
         Dictionary<int, List<Player>> playersHandStrength = new();
         foreach (Player player in players)
         {
-            if (!player.isActive) continue;
+            if (!player.stillPlaying) continue;
 
             int handStrength = EvaluateHand(player.hand, communityCards);
             if (!playersHandStrength.ContainsKey(handStrength))
@@ -244,7 +244,7 @@ public class Table
     {
         Console.WriteLine();
         Console.WriteLine($"Pot: {pot.Total}");
-        Console.WriteLine($"Players remaining: {players.Where(player => player.isActive).Count()}");
+        Console.WriteLine($"Players remaining: {players.Where(player => player.stillPlaying).Count()}");
         Console.WriteLine($"{string.Join(", ", communityCards.Select(Card.GetString))}");
         Console.WriteLine();
     }

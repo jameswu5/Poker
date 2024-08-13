@@ -9,7 +9,7 @@ public class Game
     public Table table;
     public TableUI tableUI;
 
-    public List<Player> players;
+    public List<Core.Player> players;
     public List<PlayerUI> playerUIs;
 
     private readonly int smallBlind;
@@ -31,7 +31,7 @@ public class Game
         playerUIs = new();
         for (int i = 0; i < playerNames.Count; i++)
         {
-            Player player = new(playerNames[i], startingChips, pot);
+            Player.Human player = new(playerNames[i], startingChips, pot);
             players.Add(player);
             playerUIs.Add(new PlayerUI(player, i));
         }

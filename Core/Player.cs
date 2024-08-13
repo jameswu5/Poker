@@ -4,16 +4,20 @@ using Poker.UI;
 
 namespace Poker.Core;
 
-public class Player
+public abstract class Player
 {
+    public enum Type { Human };
+    public event System.Action<Core.Action> PlayAction;
+    public bool isActive;
+
     public string name;
     public int chips;
     public CardCollection hand;
-    public bool isActive;
+    public bool stillPlaying;
 
     public Pot pot;
 
-    public bool IsAllIn => isActive & chips == 0;
+    public bool IsAllIn => stillPlaying & chips == 0;
     public int BetChips => pot[this];
 
     public Player(string name, int chips, Pot pot)
@@ -21,8 +25,10 @@ public class Player
         this.name = name;
         this.chips = chips;
         hand = new CardCollection();
-        isActive = true;
+        stillPlaying = true;
         this.pot = pot;
+
+        isActive = false;
     }
 
     public void AddChips(int amount)
@@ -42,7 +48,7 @@ public class Player
 
     public Action Fold()
     {
-        isActive = false;
+        stillPlaying = false;
         return new Fold();
     }
 
@@ -78,34 +84,21 @@ public class Player
     /// Bot logic can come here. Return a decision based on the current state of the game.
     /// Probably should change table to a state type.
     /// </summary>
-    public virtual Action GetDecision(Table table)
-    {
-        // Barebones implementation
-        Console.WriteLine();
-        Console.Write($"{name} ({chips}) - ");
-        hand.Display();
-        int owe = GetAmountToCall();
-        string oweString = owe == 0 ? "Check" : $"Call ({owe})";
-        Console.WriteLine($"\n[1] Fold, [2] {oweString}, [3] Raise");
-        int choice = int.Parse(Console.ReadLine());
-        switch (choice)
-        {
-            case 1:
-                return new Fold();
-            case 2:
-                return new Call();
-            case 3:
-                Console.WriteLine("How much do you want to raise?");
-                int amount = int.Parse(Console.ReadLine());
-                return new Raise(amount);
-            default:
-                throw new ArgumentException($"Invalid choice ({choice})");
-        }
-    }
+    public abstract Action GetDecision(Table table);
 
     public void AddCard(int card)
     {
         hand.Add(card);
+    }
+
+    public abstract void TurnToMove();
+
+    public abstract void Update();
+
+    public void Decided(Action move)
+    {
+        isActive = false;
+        PlayAction.Invoke(move);
     }
 
     public override string ToString()

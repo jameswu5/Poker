@@ -1,28 +1,36 @@
 using System;
 using System.Collections.Generic;
-using Poker.UI;
 
 namespace Poker.Core;
 
-public class Player
+public abstract class Player
 {
+    public enum Type { Human };
+    public event System.Action<Core.Action> PlayAction;
+    public bool isActive;
+
     public string name;
     public int chips;
     public CardCollection hand;
-    public bool isActive;
+    public bool stillPlaying;
 
     public Pot pot;
 
-    public bool IsAllIn => isActive & chips == 0;
+    public bool IsAllIn => stillPlaying & chips == 0;
     public int BetChips => pot[this];
+
+    // Strictly speaking this is UI, but it's easier to keep it here
+    public string actionText;
 
     public Player(string name, int chips, Pot pot)
     {
         this.name = name;
         this.chips = chips;
         hand = new CardCollection();
-        isActive = true;
+        stillPlaying = true;
         this.pot = pot;
+        isActive = false;
+        actionText = "";
     }
 
     public void AddChips(int amount)
@@ -42,26 +50,26 @@ public class Player
 
     public Action Fold()
     {
-        isActive = false;
+        stillPlaying = false;
         return new Fold();
     }
 
-    public Action Call(List<Player> activePlayers)
+    public Action Call()
     {
         if (IsAllIn)
         {
-            return new Call();
+            return new Call(-1);
         }
 
-        int highestBet = activePlayers.Max(player => player.BetChips);
-        int amountToCall = highestBet - BetChips;
-        AddToPot(amountToCall);
-        return new Call();
+        int amount = GetAmountToCall();
+        AddToPot(amount);
+        return new Call(amount);
     }
 
-    private int GetAmountToCall()
+    public int GetAmountToCall()
     {
-        return pot.pot.Values.Max() - pot[this];
+        int amount = pot.pot.Values.Max() - pot[this];
+        return Math.Min(amount, chips);
     }
 
     /// <summary>
@@ -74,38 +82,20 @@ public class Player
         return new Raise(amount);
     }
 
-    /// <summary>
-    /// Bot logic can come here. Return a decision based on the current state of the game.
-    /// Probably should change table to a state type.
-    /// </summary>
-    public virtual Action GetDecision(Table table)
-    {
-        // Barebones implementation
-        Console.WriteLine();
-        Console.Write($"{name} ({chips}) - ");
-        hand.Display();
-        int owe = GetAmountToCall();
-        string oweString = owe == 0 ? "Check" : $"Call ({owe})";
-        Console.WriteLine($"\n[1] Fold, [2] {oweString}, [3] Raise");
-        int choice = int.Parse(Console.ReadLine());
-        switch (choice)
-        {
-            case 1:
-                return new Fold();
-            case 2:
-                return new Call();
-            case 3:
-                Console.WriteLine("How much do you want to raise?");
-                int amount = int.Parse(Console.ReadLine());
-                return new Raise(amount);
-            default:
-                throw new ArgumentException($"Invalid choice ({choice})");
-        }
-    }
-
     public void AddCard(int card)
     {
         hand.Add(card);
+    }
+
+    public abstract void TurnToMove();
+
+    public abstract void Update();
+
+    public void Decided(Action move)
+    {
+        isActive = false;
+        actionText = $"{move}";
+        PlayAction.Invoke(move);
     }
 
     public override string ToString()

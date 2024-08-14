@@ -32,7 +32,7 @@ public class RaiseButton : HoverButton
     {
         // placeholder values
         minBet = 0;
-        maxBet = 200;
+        maxBet = 0;
         this.slider = slider;
     }
 
@@ -40,6 +40,13 @@ public class RaiseButton : HoverButton
     {
         action.amount = amount;
         text = $"Raise [{amount}]";
+    }
+
+    public void Reset(int minBet, int maxBet)
+    {
+        this.minBet = minBet;
+        this.maxBet = maxBet;
+        slider.val = 0;
     }
 
     protected override void Display()

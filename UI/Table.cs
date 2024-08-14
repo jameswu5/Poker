@@ -16,9 +16,12 @@ public class TableUI
     {
         DisplayEmptyTable();
         DisplayCommunityCards();
+        DisplayPot();
+        DisplayButton();
+        DisplayTurn();
     }
 
-    private void DisplayEmptyTable()
+    private static void DisplayEmptyTable()
     {
         // draw the community card borders
         for (int i = 0; i < 5; i++)
@@ -46,5 +49,27 @@ public class TableUI
             Image img = Card.GetImage(table.communityCards[i]);
             img.Draw(Settings.Card.CommunityCardPositions[i][0], Settings.Card.CommunityCardPositions[i][1]);
         }
+    }
+
+    private void DisplayPot()
+    {
+        Text.DisplayCentralText($"{table.pot}", Settings.Table.PotFontSize, Settings.Table.PotPosX, Settings.Table.PotPosY, Settings.Table.PotWidth, Settings.Table.PotHeight, Settings.Palette.White);
+    }
+
+    private void DisplayButton()
+    {
+        int centreX = Settings.Table.ButtonCentres[table.button][0];
+        int centreY = Settings.Table.ButtonCentres[table.button][1];
+
+        Raylib.DrawCircle(centreX, centreY, Settings.Table.ButtonRadius, Settings.Table.ButtonColour);
+        Text.DisplayCentralText("B", Settings.FontSize, centreX - Settings.Table.ButtonRadius, centreY - Settings.Table.ButtonRadius, 2 * Settings.Table.ButtonRadius, 2 * Settings.Table.ButtonRadius, Settings.Palette.Black);
+    }
+
+    private void DisplayTurn()
+    {
+        int posX = Settings.Card.PlayerHoleCardPositions[0][0] - Settings.Table.TurnBarPadding - Settings.Table.TurnBarWidth;
+        int posY = table.playerToMove == 0 ? Settings.Card.PlayerHoleCardPositions[0][1] : Settings.Card.BotHoleCardPositions[0][1];
+
+        Raylib.DrawRectangle(posX, posY, Settings.Table.TurnBarWidth, Settings.Card.Height, Settings.Palette.Beige);
     }
 }

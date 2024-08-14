@@ -107,4 +107,29 @@ public static class Settings
         public static readonly Color Colour = Palette.White;
         public static readonly Color FilledColour = Palette.Gold;
     }
+
+    public class Table
+    {
+        // Define the box in which the text is to be centred
+        public const int PotFontSize = 32;
+        public const int PotPosX = 0;
+        public const int PotPosY = ScreenHeight / 2 - Card.Height / 2;
+        public static readonly int PotWidth = Card.CommunityCardPositions[0][0] - Card.Border;
+        public static readonly int PotHeight = Card.Height;
+
+
+        // Button positions
+        public const int ButtonRadius = 20;
+        public static readonly Color ButtonColour = Palette.Gold;
+        private const int Padding = 15;
+        private static readonly int ButtonCentreX = Card.PlayerHoleCardPositions[1][0] + Card.Width + Padding + ButtonRadius;
+        public static readonly int[][] ButtonCentres = new int[][]
+        {
+            new int[] {ButtonCentreX, Card.PlayerHoleCardPositions[0][1] + ButtonRadius},
+            new int[] {ButtonCentreX, Card.BotHoleCardPositions[0][1] + ButtonRadius},
+        };
+
+        public const int TurnBarPadding = 10;
+        public const int TurnBarWidth = 5;
+    }
 }

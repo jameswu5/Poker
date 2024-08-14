@@ -15,13 +15,6 @@ public class Program
         RunGameWithUI();
     }
 
-    public static void RunGame()
-    {
-        List<string> playerNames = new() { "Alice", "Beth", "Claire" };
-        Game game = new(playerNames);
-        game.table.PlayRound();
-    }
-
     public static void RunGameWithUI()
     {
         InitWindow(ScreenWidth, ScreenHeight, "Poker");
@@ -29,6 +22,7 @@ public class Program
 
         List<string> playerNames = new() { "Alice", "Beth" };
         Game game = new(playerNames);
+        game.StartGame();
 
         while (!WindowShouldClose())
         {

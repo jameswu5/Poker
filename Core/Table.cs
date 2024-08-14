@@ -17,6 +17,15 @@ public class Table
 
     public int NumOfPlayers => players.Count;
 
+
+    public enum Stage { Preflop, Flop, Turn, River, Showdown };
+    public Stage stage;
+    public int playerToMove;
+    // index of the player who raised last / started betting round
+    public int terminatingTarget;
+    public int playersLeft;
+
+
     public Table(List<Player> players, Pot pot, int smallBlind, int bigBlind)
     {
         this.players = players;
@@ -27,6 +36,8 @@ public class Table
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
         button = 0;
+
+        Reset();
     }
 
     public void AddCommunityCard(int card)
@@ -40,95 +51,42 @@ public class Table
         foreach (Player player in players)
         {
             player.hand.Clear();
-            player.isActive = true;
+            player.stillPlaying = true;
+            player.actionText = "";
         }
         pot.Reset();
+
+        // button does not move
+
+        playerToMove = 0;
+        playersLeft = players.Count;
+        terminatingTarget = -1;
+        stage = Stage.Preflop;
     }
 
-    // For now, we assume the round goes to the end
-    public void PlayRound()
-    {
-        // Reset the table
-        Reset();
-
-        // Small blind and big blind + deal cards
-        PayBlinds();
-        dealer.DealHoleCards(players);
-
-        DisplayTable();
-
-        // Preflop
-        PlayBettingRound(Increment(button, 3)); // under the gun starts
-
-        // The flop
-        Console.WriteLine("\n--THE FLOP--");
-        dealer.DealFlop(this);
-        DisplayTable();
-        PlayBettingRound(Increment(button, 1)); // small blind starts
-
-
-        // Deal the turn
-        Console.WriteLine("\n--THE TURN--");
-        dealer.DealTurn(this);
-        DisplayTable();
-        PlayBettingRound(Increment(button, 1));
-
-
-        // Deal the river
-        Console.WriteLine("\n--THE RIVER--");
-        dealer.DealRiver(this);
-        DisplayTable();
-        PlayBettingRound(Increment(button, 1));
-
-        // Determine the winner(s) and distribute chips
-        DistributeChips();
-
-        // Pass the button
-        button = Increment(button);
-    }
+    /// <summary>
+    /// Increments the index by some value while not going out of range
+    /// </summary>
+    private int Increment(int index, int value = 1) => (index + value) % NumOfPlayers;
 
     private void PayBlinds()
     {
         players[Increment(button, 1)].AddToPot(smallBlind);
+        players[Increment(button, 1)].actionText = $"SB {smallBlind}";
         players[Increment(button, 2)].AddToPot(bigBlind);
+        players[Increment(button, 2)].actionText = $"BB {bigBlind}";
     }
 
-    /// <summary>
-    /// Plays a betting round with startIndex starting the betting
-    /// </summary>
-    public void PlayBettingRound(int startIndex)
+    private static int EvaluateHand(CardCollection hand, List<int> communityCards)
     {
-        // Get people with moves to play
-        int peopleWithMoves = players.Count(player => player.isActive & !player.IsAllIn);
-        if (peopleWithMoves < 2) return;
-
-        int index = startIndex;
-        int target = startIndex; // if we reach this index, we're done
-
-        do
+        // Shallow copy hand.cards (which is fine as hand.cards contains only integers)
+        List<int> evHand = hand.cards.ToList();
+        foreach (int card in communityCards)
         {
-            Player player = players[index];
-            if (player.isActive)
-            {
-                Action action = player.GetDecision(this);
-                switch (action)
-                {
-                    case Fold _:
-                        player.Fold();
-                        break;
-                    case Call _:
-                        player.Call(players.Where(player => player.isActive).ToList());
-                        break;
-                    case Raise raise:
-                        player.Raise(raise.amount);
-                        target = index;
-                        break;
-                }
-
-            }
-            index = Increment(index);
+            evHand.Add(card);
         }
-        while (index != target);
+
+        return Evaluate.Evaluate.EvaluateHand(evHand.ToArray());
     }
 
     /// <summary>
@@ -152,7 +110,7 @@ public class Table
         Dictionary<int, List<Player>> playersHandStrength = new();
         foreach (Player player in players)
         {
-            if (!player.isActive) continue;
+            if (!player.stillPlaying) continue;
 
             int handStrength = EvaluateHand(player.hand, communityCards);
             if (!playersHandStrength.ContainsKey(handStrength))
@@ -222,35 +180,111 @@ public class Table
         return payouts;
     }
 
-    /// <summary>
-    /// Increments the index by some value while not going out of range
-    /// </summary>
-    private int Increment(int index, int value = 1) => (index + value) % NumOfPlayers;
-
-    private static int EvaluateHand(CardCollection hand, List<int> communityCards)
+    public void NewRound()
     {
-        // Shallow copy hand.cards (which is fine as hand.cards contains only integers)
-        List<int> evHand = hand.cards.ToList();
-        foreach (int card in communityCards)
+        // Reset the table;
+        Reset();
+
+        // Pass the button
+        button = Increment(button);
+
+        // Small blind and big blind + deal cards
+        PayBlinds();
+        dealer.DealHoleCards(players);
+
+        stage = Stage.Preflop;
+
+        playerToMove = Increment(button, 3);
+        terminatingTarget = playerToMove;
+
+        players[playerToMove].TurnToMove();
+    }
+
+    // Handles all game logic, including transitions between and terminal states
+    public void MakeMove(Action move)
+    {
+        switch (move)
         {
-            evHand.Add(card);
+            case Fold _:
+                players[playerToMove].Fold();
+                playersLeft--;
+                break;
+            case Call _:
+                players[playerToMove].Call();
+                break;
+            case Raise raise:
+                players[playerToMove].Raise(raise.amount);
+                terminatingTarget = playerToMove;
+                break;
         }
 
-        return Evaluate.Evaluate.EvaluateHand(evHand.ToArray());
-    }
+        bool stageTransition = false;
 
+        do
+        {
+            playerToMove = Increment(playerToMove);
+            if (playerToMove == terminatingTarget)
+            {
+                // End of betting round
+                terminatingTarget = -1;
 
-    private void DisplayTable()
-    {
-        Console.WriteLine();
-        Console.WriteLine($"Pot: {pot.Total}");
-        Console.WriteLine($"Players remaining: {players.Where(player => player.isActive).Count()}");
-        Console.WriteLine($"{string.Join(", ", communityCards.Select(Card.GetString))}");
-        Console.WriteLine();
-    }
+                // Go to the next stage
+                stageTransition = true;
+                stage++;
 
-    public override string ToString()
-    {
-        return $"Pot: {pot.Total}\nCards: {string.Join(", ", communityCards.Select(Card.GetString))}";
+                break;
+            }
+        }
+        while (!players[playerToMove].stillPlaying);
+
+        // end game early if there is only one player left
+        if (playersLeft == 1)
+        {
+            // whoever playerToMove is pointing to is the winner
+            players[playerToMove].AddChips(pot.Total);
+
+            // start a new game
+            NewRound();
+            return;
+        }
+
+        if (stageTransition)
+        {
+            foreach (Player player in players)
+            {
+                player.actionText = "";
+            }
+
+            switch (stage)
+            {
+                case Stage.Flop:
+                    dealer.DealFlop(this);
+                    playerToMove = Increment(button, 1);
+                    break;
+                case Stage.Turn:
+                    dealer.DealTurn(this);
+                    playerToMove = Increment(button, 1);
+                    break;
+                case Stage.River:
+                    dealer.DealRiver(this);
+                    playerToMove = Increment(button, 1);
+                    break;
+                case Stage.Showdown:
+                    DistributeChips();
+                    NewRound();
+                    return;
+            }
+
+            terminatingTarget = playerToMove;
+
+            // Get first player who still is yet to fold
+            while (!players[playerToMove].stillPlaying)
+            {
+                playerToMove = Increment(playerToMove);
+            }
+        }
+
+        // Remind the player to move
+        players[playerToMove].TurnToMove();
     }
 }

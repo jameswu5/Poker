@@ -129,5 +129,8 @@ public static class Settings
             new int[] {ButtonCentreX, Card.PlayerHoleCardPositions[0][1] + ButtonRadius},
             new int[] {ButtonCentreX, Card.BotHoleCardPositions[0][1] + ButtonRadius},
         };
+
+        public const int TurnBarPadding = 10;
+        public const int TurnBarWidth = 5;
     }
 }

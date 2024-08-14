@@ -18,6 +18,7 @@ public class TableUI
         DisplayCommunityCards();
         DisplayPot();
         DisplayButton();
+        DisplayTurn();
     }
 
     private static void DisplayEmptyTable()
@@ -62,5 +63,13 @@ public class TableUI
 
         Raylib.DrawCircle(centreX, centreY, Settings.Table.ButtonRadius, Settings.Table.ButtonColour);
         Text.DisplayCentralText("B", Settings.FontSize, centreX - Settings.Table.ButtonRadius, centreY - Settings.Table.ButtonRadius, 2 * Settings.Table.ButtonRadius, 2 * Settings.Table.ButtonRadius, Settings.Palette.Black);
+    }
+
+    private void DisplayTurn()
+    {
+        int posX = Settings.Card.PlayerHoleCardPositions[0][0] - Settings.Table.TurnBarPadding - Settings.Table.TurnBarWidth;
+        int posY = table.playerToMove == 0 ? Settings.Card.PlayerHoleCardPositions[0][1] : Settings.Card.BotHoleCardPositions[0][1];
+
+        Raylib.DrawRectangle(posX, posY, Settings.Table.TurnBarWidth, Settings.Card.Height, Settings.Palette.Beige);
     }
 }

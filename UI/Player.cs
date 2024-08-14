@@ -23,6 +23,7 @@ public class PlayerUI
     {
         DisplayPlayerCards(seat == 0);
         DisplayPlayerStack();
+        DisplayAction();
     }
 
     private void DisplayPlayerCards(bool showCards)
@@ -43,5 +44,11 @@ public class PlayerUI
         string text = $"Stack: {player.chips}";
         int posY = seat == 0 ? Settings.ScreenHeight - Settings.Card.HoleCardPaddingY : 0;
         Text.DisplayCentralText(text, Settings.FontSize, 0, posY, Settings.ScreenWidth, Settings.Card.HoleCardPaddingY, Settings.Palette.White);
+    }
+
+    private void DisplayAction()
+    {
+        int posY = seat == 0 ? Settings.ScreenHeight - Settings.Card.HoleCardPaddingY * 2 - Settings.Card.Height : Settings.Card.HoleCardPaddingY + Settings.Card.Height;
+        Text.DisplayCentralText(player.actionText, Settings.FontSize, 0, posY, Settings.ScreenWidth, Settings.Card.HoleCardPaddingY, Settings.Palette.White);
     }
 }

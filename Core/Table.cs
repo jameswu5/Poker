@@ -52,6 +52,7 @@ public class Table
         {
             player.hand.Clear();
             player.stillPlaying = true;
+            player.actionText = "";
         }
         pot.Reset();
 
@@ -71,7 +72,9 @@ public class Table
     private void PayBlinds()
     {
         players[Increment(button, 1)].AddToPot(smallBlind);
+        players[Increment(button, 1)].actionText = $"SB {smallBlind}";
         players[Increment(button, 2)].AddToPot(bigBlind);
+        players[Increment(button, 2)].actionText = $"BB {bigBlind}";
     }
 
     private static int EvaluateHand(CardCollection hand, List<int> communityCards)
@@ -247,6 +250,11 @@ public class Table
 
         if (stageTransition)
         {
+            foreach (Player player in players)
+            {
+                player.actionText = "";
+            }
+
             switch (stage)
             {
                 case Stage.Flop:

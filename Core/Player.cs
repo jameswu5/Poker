@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Poker.UI;
 
 namespace Poker.Core;
 
@@ -20,6 +19,9 @@ public abstract class Player
     public bool IsAllIn => stillPlaying & chips == 0;
     public int BetChips => pot[this];
 
+    // Strictly speaking this is UI, but it's easier to keep it here
+    public string actionText;
+
     public Player(string name, int chips, Pot pot)
     {
         this.name = name;
@@ -27,8 +29,8 @@ public abstract class Player
         hand = new CardCollection();
         stillPlaying = true;
         this.pot = pot;
-
         isActive = false;
+        actionText = "";
     }
 
     public void AddChips(int amount)
@@ -56,14 +58,15 @@ public abstract class Player
     {
         if (IsAllIn)
         {
-            return new Call();
+            return new Call(-1);
         }
 
-        AddToPot(GetAmountToCall());
-        return new Call();
+        int amount = GetAmountToCall();
+        AddToPot(amount);
+        return new Call(amount);
     }
 
-    protected int GetAmountToCall()
+    public int GetAmountToCall()
     {
         int amount = pot.pot.Values.Max() - pot[this];
         return Math.Min(amount, chips);
@@ -91,6 +94,7 @@ public abstract class Player
     public void Decided(Action move)
     {
         isActive = false;
+        actionText = $"{move}";
         PlayAction.Invoke(move);
     }
 

@@ -1,5 +1,4 @@
 using System;
-using System.IO.Compression;
 using Raylib_cs;
 
 namespace Poker.UI;

@@ -94,7 +94,7 @@ public class Game
     /// <summary>
     /// Creates a player and UI and adds it to the game.
     /// </summary>
-    private void CreatePlayer(string name, int chips, Pot pot,  Core.Player.Type type)
+    private void CreatePlayer(string name, int chips, Pot pot, Core.Player.Type type)
     {
         Core.Player player = type switch
         {
@@ -110,8 +110,6 @@ public class Game
 
     private void ExecuteButtonAction(ButtonAction buttonAction)
     {
-        Console.WriteLine($"{buttonAction.choice} {buttonAction.amount}");
-
         if (players[table.playerToMove] is Human player)
         {
             switch (buttonAction.choice)
@@ -120,7 +118,7 @@ public class Game
                     player.Decided(new Fold());
                     break;
                 case "Call":
-                    player.Decided(new Call());
+                    player.Decided(new Call(player.GetAmountToCall()));
                     break;
                 case "Raise":
                     player.Decided(new Raise(buttonAction.amount));

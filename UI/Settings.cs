@@ -1,4 +1,5 @@
 using System;
+using System.IO.Compression;
 using Raylib_cs;
 
 namespace Poker.UI;
@@ -106,5 +107,15 @@ public static class Settings
         public const int Radius = 8;
         public static readonly Color Colour = Palette.White;
         public static readonly Color FilledColour = Palette.Gold;
+    }
+
+    public class Table
+    {
+        // Define the box in which the text is to be centred
+        public const int PotFontSize = 32;
+        public const int PotPosX = 0;
+        public const int PotPosY = ScreenHeight / 2 - Card.Height / 2;
+        public static readonly int PotWidth = Card.CommunityCardPositions[0][0] - Card.Border;
+        public static readonly int PotHeight = Card.Height;
     }
 }

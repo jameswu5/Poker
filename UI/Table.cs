@@ -16,9 +16,10 @@ public class TableUI
     {
         DisplayEmptyTable();
         DisplayCommunityCards();
+        DisplayPot();
     }
 
-    private void DisplayEmptyTable()
+    private static void DisplayEmptyTable()
     {
         // draw the community card borders
         for (int i = 0; i < 5; i++)
@@ -46,5 +47,10 @@ public class TableUI
             Image img = Card.GetImage(table.communityCards[i]);
             img.Draw(Settings.Card.CommunityCardPositions[i][0], Settings.Card.CommunityCardPositions[i][1]);
         }
+    }
+
+    private void DisplayPot()
+    {
+        Text.DisplayCentralText($"{table.pot}", Settings.Table.PotFontSize, Settings.Table.PotPosX, Settings.Table.PotPosY, Settings.Table.PotWidth, Settings.Table.PotHeight, Settings.Palette.White);
     }
 }

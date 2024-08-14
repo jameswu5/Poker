@@ -29,12 +29,7 @@ public class Call : Action
 
     public override string ToString()
     {
-        return amount switch
-        {
-            -1 => "All In",
-            0 => "Check",
-            _ => $"Call {amount}",
-        };
+        return amount == 0 ? "Check" : $"Call";
     }
 }
 

@@ -70,11 +70,11 @@ public class Slider
     {
         if (isHorizontal)
         {
-            return x >= posX && x <= posX + length && y >= posY - Radius + Thickness / 2 && y <= posY + Radius + Thickness / 2;
+            return x >= posX - Radius && x <= posX + length + Radius && y >= posY - Radius + Thickness / 2 && y <= posY + Radius + Thickness / 2;
         }
         else
         {
-            return x >= posX - Radius + Thickness / 2 && x <= posX + Radius + Thickness / 2 && y >= posY && y <= posY + length;
+            return x >= posX - Radius + Thickness / 2 && x <= posX + Radius + Thickness / 2 && y >= posY - Radius && y <= posY + length + Radius;
         }
     }
 

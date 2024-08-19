@@ -98,7 +98,6 @@ public class Table
         Dictionary<Player, int> payouts = ComputePayout();
         foreach (KeyValuePair<Player, int> pair in payouts)
         {
-            Console.WriteLine($"Player {pair.Key.name} wins {pair.Value}");
             pair.Key.AddChips(pair.Value);
         }
     }
@@ -264,6 +263,26 @@ public class Table
         players[playerToMove].TurnToMove();
     }
 
+    private void HandleEndOfRound()
+    {
+        // Check if someone is out of chips, if so remove them
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].chips == 0)
+            {
+                HandleGameOver();
+                return;
+            }
+        }
+        NewRound();
+    }
+
+    private void HandleGameOver()
+    {
+        // Need to invoke a Game function to either start a new game, or to exit
+        throw new NotImplementedException();
+    }
+
     // Handles all game logic, including transitions between and terminal states
     public void MakeMove(Action move)
     {
@@ -309,7 +328,7 @@ public class Table
             players[playerToMove].AddChips(pot.Total);
 
             // start a new game
-            NewRound();
+            HandleEndOfRound();
             return;
         }
 
@@ -326,7 +345,7 @@ public class Table
                 // Deal the rest of the community cards
                 dealer.DealCommunityCards(5 - communityCards.Count, this);
                 DistributeChips();
-                NewRound();
+                HandleEndOfRound();
                 return;
             }
 
@@ -346,7 +365,7 @@ public class Table
                     break;
                 case Stage.Showdown:
                     DistributeChips();
-                    NewRound();
+                    HandleEndOfRound();
                     return;
             }
 

@@ -282,6 +282,7 @@ public class Table
                 break;
         }
 
+        bool isAllIn = players[playerToMove].IsAllIn;
         bool stageTransition = false;
 
         do
@@ -317,6 +318,16 @@ public class Table
             foreach (Player player in players)
             {
                 player.actionText = "";
+            }
+
+            // If a player is all in, we simulate to the end (this only works for two players)
+            if (isAllIn && NumOfPlayers == 2)
+            {
+                // Deal the rest of the community cards
+                dealer.DealCommunityCards(5 - communityCards.Count, this);
+                DistributeChips();
+                NewRound();
+                return;
             }
 
             switch (stage)

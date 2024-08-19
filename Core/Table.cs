@@ -48,6 +48,7 @@ public class Table
     public void Reset()
     {
         communityCards.Clear();
+        dealer.Reset();
         foreach (Player player in players)
         {
             player.hand.Clear();
@@ -104,6 +105,69 @@ public class Table
 
     private Dictionary<Player, int> ComputePayout()
     {
+        if (NumOfPlayers != 2) throw new Exception("Only two-player games are supported");
+        if (playersLeft == 0) throw new Exception("No players left (something has gone wrong)");
+
+        Dictionary<Player, int> payouts = new()
+        {
+            { players[0], 0 },
+            { players[1], 0 }
+        };
+
+        // If there is only one player left, they win the whole pot
+        if (playersLeft == 1)
+        {
+            foreach (Player player in players)
+            {
+                if (player.stillPlaying)
+                {
+                    payouts[player] = pot.Total;
+                }
+            }
+            return payouts;
+        }
+
+        // Check if there is an imbalance in chips put (i.e. someone is all in)
+        int bet1 = pot[players[0]];
+        int bet2 = pot[players[1]];
+
+        // If so, whoever puts more chips gets them back, and this imbalance is removed from the pot
+        int diff = Math.Abs(bet1 - bet2);
+        if (bet1 > bet2)
+        {
+            payouts[players[0]] += diff;
+            pot[players[0]] -= diff;
+        }
+        else if (bet2 > bet1)
+        {
+            payouts[players[1]] += diff;
+            pot[players[1]] -= diff;
+        }
+
+        // Determine who wins out of the two and add chips
+        int handStrength1 = EvaluateHand(players[0].hand, communityCards);
+        int handStrength2 = EvaluateHand(players[1].hand, communityCards);
+
+        if (handStrength1 > handStrength2)
+        {
+            payouts[players[0]] += pot.Total;
+        }
+        else if (handStrength2 > handStrength1)
+        {
+            payouts[players[1]] += pot.Total;
+        }
+        else
+        {
+            payouts[players[0]] += pot.Total / 2;
+            payouts[players[1]] += pot.Total / 2;
+        }
+
+        return payouts;
+    }
+
+    // This is my code for the general case, which I won't use for the two-player game (it's untested)
+    private Dictionary<Player, int> ComputePayoutGeneral()
+    {
         Dictionary<Player, int> payouts = new();
 
         // This whole code is so ugly
@@ -121,7 +185,7 @@ public class Table
             playersHandStrength[handStrength].Add(player);
         }
 
-        // Sort
+        // Heap sort
         PriorityQueue<List<Player>, int> playersByHandStrength = new();
 
         foreach (KeyValuePair<int, List<Player>> pair in playersHandStrength)

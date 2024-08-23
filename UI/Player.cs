@@ -41,7 +41,7 @@ public class PlayerUI
 
     private void DisplayPlayerStack()
     {
-        string text = $"Stack: {player.chips}";
+        string text = $"{player.name} [{player.chips}]";
         int posY = seat == 0 ? Settings.ScreenHeight - Settings.Card.HoleCardPaddingY : 0;
         Text.DisplayCentralText(text, Settings.FontSize, 0, posY, Settings.ScreenWidth, Settings.Card.HoleCardPaddingY, Settings.Palette.White);
     }

@@ -132,4 +132,19 @@ public static class Settings
         public const int TurnBarPadding = 10;
         public const int TurnBarWidth = 5;
     }
+
+    public class Match
+    {
+        public const int PosX = 50;
+        public const int PosY = 50;
+        public const int Padding = 20;
+        public const int FontSize = 28;
+        public static readonly Color Colour = Palette.White;
+
+        public static readonly int[][] ResultPositions = new int[][]
+        {
+            new int[] {PosX, PosY},
+            new int[] {PosX, PosY + FontSize + Padding}
+        };
+    }
 }

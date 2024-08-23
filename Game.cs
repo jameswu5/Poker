@@ -7,20 +7,27 @@ namespace Poker;
 
 public class Game
 {
+    public int startingChips;
+
     public Table table;
     public TableUI tableUI;
 
     public List<Core.Player> players;
     public List<PlayerUI> playerUIs;
 
-    private FoldButton foldButton;
-    private CallButton callButton;
-    private RaiseButton raiseButton;
+    private readonly FoldButton foldButton;
+    private readonly CallButton callButton;
+    private readonly RaiseButton raiseButton;
 
-    private Slider slider;
+    private readonly Slider slider;
+
+    public Match match;
+    public const int matches = 2;
 
     public Game(List<string> playerNames, int startingChips = 200, int smallBlind = 1, int bigBlind = 2)
     {
+        this.startingChips = startingChips;
+
         // Slider
         slider = new Slider(Settings.Slider.PosX, Settings.Slider.PosY, Settings.Slider.Length, Settings.Slider.IsHorizontal);
 
@@ -40,7 +47,10 @@ public class Game
         }
 
         table = new Table(players, pot, smallBlind, bigBlind);
+        table.OnGameOver += HandleEndOfRound;
         tableUI = new TableUI(table);
+
+        match = new(players, matches);
     }
 
     public void StartGame()
@@ -48,9 +58,40 @@ public class Game
         table.NewRound();
     }
 
+    public void HandleEndOfRound()
+    {
+        // update the wins of the player in the match, and start a new match if there are still some left
+        for (int i = 0; i < table.NumOfPlayers; i++)
+        {
+            if (table.players[i].chips > 0)
+            {
+                match.wins[i]++;
+            }
+        }
+
+        if (match.matches > 1)
+        {
+            // Reset player chips
+            foreach (Core.Player player in players)
+            {
+                player.chips = startingChips;
+            }
+
+            match.matches--;
+            StartGame();
+        }
+        else
+        {
+            // End of game
+            match.PrintResults();
+            Environment.Exit(0);
+        }
+    }
+
     public void Display()
     {
         tableUI.Display();
+        match.Display();
         foreach (PlayerUI playerUI in playerUIs)
         {
             playerUI.Display();

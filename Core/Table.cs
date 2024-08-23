@@ -17,7 +17,6 @@ public class Table
 
     public int NumOfPlayers => players.Count;
 
-
     public enum Stage { Preflop, Flop, Turn, River, Showdown };
     public Stage stage;
     public int playerToMove;
@@ -25,6 +24,7 @@ public class Table
     public int terminatingTarget;
     public int playersLeft;
 
+    public event System.Action OnGameOver;
 
     public Table(List<Player> players, Pot pot, int smallBlind, int bigBlind)
     {
@@ -280,7 +280,7 @@ public class Table
     private void HandleGameOver()
     {
         // Need to invoke a Game function to either start a new game, or to exit
-        throw new NotImplementedException();
+        OnGameOver.Invoke();
     }
 
     // Handles all game logic, including transitions between and terminal states

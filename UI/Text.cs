@@ -10,6 +10,11 @@ public static class Text
     private static Font font = Raylib.LoadFont(FontPath);
     private const float spacing = 1f;
 
+    public static void DisplayLeftText(string text, int fontSize, int posX, int posY, Color colour)
+    {
+        Raylib.DrawTextEx(font, text, new Vector2(posX, posY), fontSize, spacing, colour);
+    }
+
     /// <summary>
     /// Display text in the centre of the box defined by the parameters.
     /// </summary>

@@ -5,7 +5,7 @@ namespace Poker.Core;
 
 public abstract class Player
 {
-    public enum Type { Human };
+    public enum Type { Human, RandomBot };
     public event System.Action<Core.Action> PlayAction;
     public bool isActive;
 

@@ -13,6 +13,16 @@ public abstract class Action
     }
 }
 
+public class Null : Action
+{
+    public Null() : base(0) {}
+
+    public override string ToString()
+    {
+        return "Null";
+    }
+}
+
 public class Fold : Action
 {
     public Fold() : base(0) {}

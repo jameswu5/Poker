@@ -29,7 +29,7 @@ public class Program
             BeginDrawing();
             ClearBackground(ScreenColour);
 
-            game.Display();
+            game.Update();
 
             EndDrawing();
         }

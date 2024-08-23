@@ -22,7 +22,7 @@ public class Game
     private readonly Slider slider;
 
     public Match match;
-    public const int matches = 2;
+    public const int matches = 50;
 
     public Game(List<string> playerNames, int startingChips = 200, int smallBlind = 1, int bigBlind = 2)
     {
@@ -41,10 +41,9 @@ public class Game
         playerUIs = new();
 
         // For now just stick with humans
-        foreach (string name in playerNames)
-        {
-            CreatePlayer(name, startingChips, pot, Core.Player.Type.Human);
-        }
+
+        CreatePlayer(playerNames[0], startingChips, pot, Core.Player.Type.Human);
+        CreatePlayer(playerNames[1], startingChips, pot, Core.Player.Type.RandomBot);
 
         table = new Table(players, pot, smallBlind, bigBlind);
         table.OnGameOver += HandleEndOfRound;
@@ -105,6 +104,11 @@ public class Game
 
     public void Update()
     {
+        foreach (Core.Player player in players)
+        {
+            player.Update();
+        }
+
         Display();
     }
 
@@ -140,6 +144,7 @@ public class Game
         Core.Player player = type switch
         {
             Core.Player.Type.Human => new Human(name, chips, pot, callButton, raiseButton),
+            Core.Player.Type.RandomBot => Bot.GetBotFromBotType(type, chips, pot),
             _ => throw new Exception($"Invalid player type: {type}"),
         };
 

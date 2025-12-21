@@ -7,8 +7,7 @@ namespace Poker.Experiment;
 public class Simulation
 {
     // 3D array to hold hole card strength results
-    private readonly int[,,] holeCardStrengthResults = new int[13, 13, 3]; // [wins, draws, losses]
-    private Dealer dealer;
+    private readonly Dealer dealer;
 
     public Simulation()
     {
@@ -74,7 +73,59 @@ public class Simulation
         }
     }
 
-    public void SimulateRound(int runs)
+    public void Simulate(int rounds, int runsPerRound)
+    {
+        int[,,] results = new int[13, 13, 3];
+
+        for (int round = 0; round < rounds; round++)
+        {
+            if (round % 1000 == 999)
+            {
+                Console.WriteLine($"Simulating round {round + 1} / {rounds}");
+            }
+
+            SimulateRound(runsPerRound, results);
+        }
+
+        // Compute win rates
+        List<(string hand, int wins, int draws, int losses, double winRate)> handWinRates = new();
+
+        for (int row = 0; row < 13; row++)
+        {
+            for (int col = 0; col < 13; col++)
+            {
+                string hand = IndicesToString(row, col);
+
+                int wins = results[row, col, 0];
+                int draws = results[row, col, 1];
+                int losses = results[row, col, 2];
+                double winRate = wins / (double)(wins + draws + losses) * 100.0;
+                handWinRates.Add((hand, wins, draws, losses, winRate));
+            }
+        }
+
+        // Sort by win rate descending, then by wins
+        handWinRates.Sort((a, b) =>
+        {
+            int cmp = b.winRate.CompareTo(a.winRate);
+            if (cmp == 0)
+            {
+                return b.wins.CompareTo(a.wins);
+            }
+            return cmp;
+        });
+
+        // Display results
+        int rank = 1;
+        Console.WriteLine("\n=== Hole Card Win Rates ===");
+        foreach (var (hand, wins, draws, losses, winRate) in handWinRates)
+        {
+            Console.WriteLine($"{rank}. {hand}: {winRate:F2}% [W:{wins} D:{draws} L:{losses}]");
+            rank++;
+        }
+    }
+
+    private void SimulateRound(int runs, int[,,] results)
     {
         dealer.Reset();
 
@@ -131,22 +182,22 @@ public class Simulation
 
         if (wins > losses)
         {
-            holeCardStrengthResults[row1, col1, 0]++; // win
-            holeCardStrengthResults[row2, col2, 2]++; // loss
+            results[row1, col1, 0]++; // win
+            results[row2, col2, 2]++; // loss
         }
         else if (wins == losses)
         {
-            holeCardStrengthResults[row1, col1, 1]++; // draw
-            holeCardStrengthResults[row2, col2, 1]++; // draw
+            results[row1, col1, 1]++; // draw
+            results[row2, col2, 1]++; // draw
         }
         else
         {
-            holeCardStrengthResults[row1, col1, 2]++; // loss
-            holeCardStrengthResults[row2, col2, 0]++; // win
+            results[row1, col1, 2]++; // loss
+            results[row2, col2, 0]++; // win
         }
 
         // Display results
-        Console.WriteLine($"{hand1} vs {hand2} => Wins: {wins}, Draws: {draws}, Losses: {losses}");
+        // Console.WriteLine($"{hand1} vs {hand2} => Wins: {wins}, Draws: {draws}, Losses: {losses}");
     }
 
     public void Test()

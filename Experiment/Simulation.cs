@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Poker.Core;
 
 namespace Poker.Experiment;
@@ -72,9 +73,9 @@ public class Simulation
         }
     }
 
-    public void Simulate(int rounds, int runsPerRound)
+    public void Simulate(int players, int rounds, int runsPerRound)
     {
-        int[,,] results = new int[13, 13, 3];
+        int[,,] results = new int[13, 13, 2];
 
         for (int round = 0; round < rounds; round++)
         {
@@ -83,11 +84,11 @@ public class Simulation
                 Console.WriteLine($"Simulating round {round + 1} / {rounds}");
             }
 
-            SimulateRound(runsPerRound, results);
+            SimulateRound(players, runsPerRound, results);
         }
 
         // Compute win rates
-        List<(string hand, int wins, int draws, int losses, double winRate)> handWinRates = new();
+        List<(string hand, int wins, int losses, double winRate)> handWinRates = new();
 
         for (int row = 0; row < 13; row++)
         {
@@ -96,10 +97,9 @@ public class Simulation
                 string hand = IndicesToString(row, col);
 
                 int wins = results[row, col, 0];
-                int draws = results[row, col, 1];
-                int losses = results[row, col, 2];
-                double winRate = wins / (double)(wins + draws + losses) * 100.0;
-                handWinRates.Add((hand, wins, draws, losses, winRate));
+                int losses = results[row, col, 1];
+                double winRate = wins / (double)(wins + losses) * 100.0;
+                handWinRates.Add((hand, wins, losses, winRate));
             }
         }
 
@@ -109,7 +109,13 @@ public class Simulation
             int cmp = b.winRate.CompareTo(a.winRate);
             if (cmp == 0)
             {
-                return b.wins.CompareTo(a.wins);
+                int cmp2 = b.wins.CompareTo(a.wins);
+                if (cmp2 == 0)
+                {
+                    return a.losses.CompareTo(b.losses);
+                }
+                
+                return cmp2;
             }
             return cmp;
         });
@@ -117,32 +123,26 @@ public class Simulation
         // Display results
         int rank = 1;
         Console.WriteLine("\n=== Hole Card Win Rates ===");
-        foreach (var (hand, wins, draws, losses, winRate) in handWinRates)
+        foreach (var (hand, wins, losses, winRate) in handWinRates)
         {
-            Console.WriteLine($"{rank}. {hand}: {winRate:F2}% [W:{wins} D:{draws} L:{losses}]");
+            Console.WriteLine($"{rank}. {hand}: {winRate:F2}% [W:{wins} L:{losses}]");
             rank++;
         }
     }
 
-    private void SimulateRound(int runs, int[,,] results)
+    private void SimulateRound(int players, int runs, int[,,] results)
     {
         dealer.Reset();
 
-        // Deal hole cards to two players
-        int card1a = dealer.DealCard();
-        int card1b = dealer.DealCard();
-        (int row1, int col1) = GetHoleCardIndices(card1a, card1b);
-        string hand1 = IndicesToString(row1, col1);
+        // Deal hole cards to the players
+        int[,] holeCards = new int[players, 2];
+        for (int i = 0; i < players * 2; i++)
+        {
+            holeCards[i / 2, i % 2] = dealer.DealCard();
+        }
 
-        int card2a = dealer.DealCard();
-        int card2b = dealer.DealCard();
-        (int row2, int col2) = GetHoleCardIndices(card2a, card2b);
-        string hand2 = IndicesToString(row2, col2);
-
-        // Player 1 stats
-        int wins = 0;
-        int draws = 0;
-        int losses = 0;
+        int[] wins = new int[players];
+        int[] losses = new int[players];
 
         for (int run = 0; run < runs; run++)
         {
@@ -153,23 +153,27 @@ public class Simulation
                 communityCards[i] = dealer.DealCard();
             }
 
-            // Evaluate hands
-            communityCards[5] = card1a;
-            communityCards[6] = card1b;
+            int[] strengths = new int[players];
+            for (int p = 0; p < players; p++)
+            {
+                communityCards[5] = holeCards[p, 0];
+                communityCards[6] = holeCards[p, 1];
+                strengths[p] = Evaluate.Evaluate.EvaluateHand(communityCards);
+            }
 
-            int strength1 = Evaluate.Evaluate.EvaluateHand(communityCards);
-
-            communityCards[5] = card2a;
-            communityCards[6] = card2b;
-
-            int strength2 = Evaluate.Evaluate.EvaluateHand(communityCards);
-
-            if (strength1 < strength2)
-                wins++;
-            else if (strength1 == strength2)
-                draws++;
-            else
-                losses++;
+            // Determine winner(s)
+            int maxStrength = strengths.Min();
+            for (int p = 0; p < players; p++)
+            {
+                if (strengths[p] == maxStrength)
+                {
+                    wins[p]++;
+                }
+                else
+                {
+                    losses[p]++;
+                }
+            }
 
             // Put cards back in deck and shuffle
             for (int i = 0; i < 5; i++)
@@ -179,24 +183,20 @@ public class Simulation
             dealer.deck.Shuffle();
         }
 
-        if (wins > losses)
+        // Update results
+        int maxWins = wins.Max();
+        for (int p = 0; p < players; p++)
         {
-            results[row1, col1, 0]++; // win
-            results[row2, col2, 2]++; // loss
+            var (row, col) = GetHoleCardIndices(holeCards[p, 0], holeCards[p, 1]);
+            if (wins[p] == maxWins)
+            {
+                results[row, col, 0]++;
+            }
+            else
+            {
+                results[row, col, 1]++;
+            }
         }
-        else if (wins == losses)
-        {
-            results[row1, col1, 1]++; // draw
-            results[row2, col2, 1]++; // draw
-        }
-        else
-        {
-            results[row1, col1, 2]++; // loss
-            results[row2, col2, 0]++; // win
-        }
-
-        // Display results
-        // Console.WriteLine($"{hand1} vs {hand2} => Wins: {wins}, Draws: {draws}, Losses: {losses}");
     }
 
     public void Test()

@@ -6,7 +6,6 @@ namespace Poker.Experiment;
 
 public class Simulation
 {
-    // 3D array to hold hole card strength results
     private readonly Dealer dealer;
 
     public Simulation()

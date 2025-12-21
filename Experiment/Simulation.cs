@@ -73,18 +73,19 @@ public class Simulation
         }
     }
 
-    public void Simulate(int players, int rounds, int runsPerRound)
+    public void Simulate(int players, int rounds)
     {
         int[,,] results = new int[13, 13, 2];
 
         for (int round = 0; round < rounds; round++)
         {
-            if (round % 1000 == 999)
+            int verbose = 10000;
+            if (round % verbose == verbose - 1)
             {
                 Console.WriteLine($"Simulating round {round + 1} / {rounds}");
             }
 
-            SimulateRound(players, runsPerRound, results);
+            SimulateRound(players, results);
         }
 
         // Compute win rates
@@ -130,7 +131,7 @@ public class Simulation
         }
     }
 
-    private void SimulateRound(int players, int runs, int[,,] results)
+    private void SimulateRound(int players, int[,,] results)
     {
         dealer.Reset();
 
@@ -141,54 +142,28 @@ public class Simulation
             holeCards[i / 2, i % 2] = dealer.DealCard();
         }
 
-        int[] wins = new int[players];
-        int[] losses = new int[players];
-
-        for (int run = 0; run < runs; run++)
+        // Deal community cards
+        int[] communityCards = new int[7];
+        for (int i = 0; i < 5; i++)
         {
-            // Deal community cards
-            int[] communityCards = new int[7];
-            for (int i = 0; i < 5; i++)
-            {
-                communityCards[i] = dealer.DealCard();
-            }
-
-            int[] strengths = new int[players];
-            for (int p = 0; p < players; p++)
-            {
-                communityCards[5] = holeCards[p, 0];
-                communityCards[6] = holeCards[p, 1];
-                strengths[p] = Evaluate.Evaluate.EvaluateHand(communityCards);
-            }
-
-            // Determine winner(s)
-            int maxStrength = strengths.Min();
-            for (int p = 0; p < players; p++)
-            {
-                if (strengths[p] == maxStrength)
-                {
-                    wins[p]++;
-                }
-                else
-                {
-                    losses[p]++;
-                }
-            }
-
-            // Put cards back in deck and shuffle
-            for (int i = 0; i < 5; i++)
-            {
-                dealer.deck.Add(communityCards[i]);
-            }
-            dealer.deck.Shuffle();
+            communityCards[i] = dealer.DealCard();
         }
 
-        // Update results
-        int maxWins = wins.Max();
+        int[] strengths = new int[players];
+        for (int p = 0; p < players; p++)
+        {
+            communityCards[5] = holeCards[p, 0];
+            communityCards[6] = holeCards[p, 1];
+            strengths[p] = Evaluate.Evaluate.EvaluateHand(communityCards);
+        }
+
+        // Determine winner(s)
+        int maxStrength = strengths.Min();
         for (int p = 0; p < players; p++)
         {
             var (row, col) = GetHoleCardIndices(holeCards[p, 0], holeCards[p, 1]);
-            if (wins[p] == maxWins)
+
+            if (strengths[p] == maxStrength)
             {
                 results[row, col, 0]++;
             }

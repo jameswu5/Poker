@@ -14,7 +14,7 @@ public class Program
         // RunGame();
         // RunGameWithUI();
         Experiment.Simulation simulation = new();
-        simulation.Simulate(9, 20000, 500);
+        simulation.Simulate(9, 1000000);
     }
 
     public static void RunGameWithUI()

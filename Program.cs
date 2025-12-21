@@ -12,7 +12,9 @@ public class Program
     {
         // Cases.CheckAllCardHands(7);
         // RunGame();
-        RunGameWithUI();
+        // RunGameWithUI();
+        Experiment.Simulation simulation = new();
+        simulation.Test();
     }
 
     public static void RunGameWithUI()
